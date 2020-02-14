@@ -6,7 +6,9 @@ import HeaderComponent from "../HeaderComponent.jsx";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import HomeComponent from "../HomeComponent.jsx";
 import UpdateProductFile from "../UpdateProductFile.jsx";
-import patientListComponent from "../Patients/PatientListComponent.jsx";
+import PatientListComponent from "../Patients/PatientListComponent.jsx";
+import ErrorComponent from "../ErrorComponent.jsx";
+import PatientComponent from "../Patients/PatientComponent.jsx";
 
 // import AuthenticationService from "../../Authentication/AuthenticationService.js";
 import AuthenticatedRoute from "../../Authentication/AuthenticatedRoute.jsx";
@@ -25,10 +27,18 @@ export default class MedicineManagerApp extends Component {
             path="/productfile"
             component={UpdateProductFile}
           />
+
+          <AuthenticatedRoute
+            path="/patients/:id"
+            component={PatientComponent}
+          />
           <AuthenticatedRoute
             path="/patients"
-            component={patientListComponent}
+            exact
+            component={PatientListComponent}
           />
+
+          <AuthenticatedRoute component={ErrorComponent} />
           <Route component={LoginComponent} />
         </Switch>
       </Router>

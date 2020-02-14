@@ -15,19 +15,25 @@ export default class patientListComponent extends Component {
   render() {
     return (
       <div className="container">
-        <h1>List Patients</h1>
+        <h1>Patients</h1>
+        <div align="right">May contain search bar here</div>
         <div className="container">
           <table className="table">
             <thead>
               <tr>
-                <th>first name</th>
-                <th>last name</th>
+                <th>First Name</th>
+                <th>Last Name</th>
                 <th>D.O.B</th>
               </tr>
             </thead>
             <tbody>
               {this.state.patients.map(patient => (
-                <tr key={patient.id}>
+                <tr
+                  key={patient.id}
+                  onClick={() =>
+                    this.props.history.push(`/patients/${patient.id}`)
+                  }
+                >
                   <td>{patient.firstName}</td>
                   <td>{patient.lastName}</td>
                   <td>{patient.DOB.toString()}</td>

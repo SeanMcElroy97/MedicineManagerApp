@@ -10,12 +10,14 @@ export default class HomeComponent extends Component {
     return (
       <>
         <button onClick={() => this.props.history.push("/productfile")}>
-          Add Product file
+          Update the Product file
         </button>
         <button onClick={() => this.props.history.push("/patients")}>
           Patients
         </button>
-        <button>Enter a prescription</button>
+        <button>Prescriptions</button>
+        <button>Stock Management</button>
+        <button>Reports</button>
       </>
     );
   }
