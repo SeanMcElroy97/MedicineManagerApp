@@ -28,32 +28,100 @@ class LoginComponent extends Component {
 
   render() {
     return (
-      <div className="container">
-        <h1>Login</h1>
-        <div className="container">
-          {this.state.hasSignUpFailed && (
-            <div className="alert alert-warning">Invalid credentials</div>
-          )}
-          {this.state.hasLoginSucceded && (
-            <div className="alert alert-success">Login Success</div>
-          )}
-          Pharmacy Email:
-          <input
-            type="text"
-            name="pharmEmail"
-            value={this.state.pharmEmail}
-            onChange={this.inputChangeHandler}
-          />
-          Password:
-          <input
-            type="password"
-            name="pharmPassword"
-            value={this.state.password}
-            onChange={this.inputChangeHandler}
-          />
-          <button className="btn btn-success" onClick={this.LoginValidation}>
-            Login
-          </button>
+      <div className="row">
+        <div className="col bg-dark text-white">
+          <div className="container border">
+            <h1>Sign up</h1>
+            <div>
+              Pharmacy Email:
+              <input
+                type="text"
+                name="pharmEmail"
+                value={this.state.pharmEmail}
+                onChange={this.inputChangeHandler}
+              />
+            </div>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Email address</label>
+              <input
+                type="email"
+                class="form-control"
+                id="exampleInputEmail1"
+                aria-describedby="emailHelp"
+                placeholder="Enter email"
+              />
+              <small id="emailHelp" class="form-text text-muted">
+                We'll never share your email with anyone else.
+              </small>
+            </div>
+            <div>
+              Password:
+              <input
+                type="password"
+                name="pharmPassword"
+                value={this.state.password}
+                onChange={this.inputChangeHandler}
+              />
+            </div>
+            <div>
+              Pharmacy Name:
+              <input
+                type="text"
+                name="pharmacyName"
+                value={this.state.password}
+                onChange={this.inputChangeHandler}
+              />
+            </div>
+            <diV>
+              Branch (if necessary):
+              <input
+                type="text"
+                name="pharmacyName"
+                value={this.state.password}
+                onChange={this.inputChangeHandler}
+              />
+            </diV>
+            <button
+              className="btn btn-success"
+              onClick={() => console.log("sign up clicked")}
+            >
+              Sign Up
+            </button>
+          </div>
+        </div>
+
+        <div className="col bg-primary text-white">
+          <div className="container border">
+            <h1>Login</h1>
+            <div className="container">
+              {this.state.hasSignUpFailed && (
+                <div className="alert alert-warning">Invalid credentials</div>
+              )}
+              {this.state.hasLoginSucceded && (
+                <div className="alert alert-success">Login Success</div>
+              )}
+              Pharmacy Email:
+              <input
+                type="text"
+                name="pharmEmail"
+                value={this.state.pharmEmail}
+                onChange={this.inputChangeHandler}
+              />
+              Password:
+              <input
+                type="password"
+                name="pharmPassword"
+                value={this.state.password}
+                onChange={this.inputChangeHandler}
+              />
+              <button
+                className="btn btn-success"
+                onClick={this.LoginValidation}
+              >
+                Login
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );

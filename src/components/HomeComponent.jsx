@@ -9,13 +9,15 @@ export default class HomeComponent extends Component {
   render() {
     return (
       <>
-        <button onClick={() => this.props.history.push("/productfile")}>
+        <button onClick={() => this.props.history.push("/medicine")}>
           Update the Product file
         </button>
         <button onClick={() => this.props.history.push("/patients")}>
           Patients
         </button>
-        <button>Prescriptions</button>
+        <button onClick={() => this.props.history.push("/prescriptions")}>
+          Prescriptions
+        </button>
         <button>Stock Management</button>
         <button>Reports</button>
       </>

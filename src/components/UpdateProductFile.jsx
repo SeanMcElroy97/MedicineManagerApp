@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Dropzone from "react-dropzone";
-import MedicineService from "../api/medicine/MedicineService.js";
+import MedicineService from "../api/MedicineService.js";
 
 class UpdateProductFile extends Component {
   //this method responds when file has been dropped
@@ -8,8 +8,40 @@ class UpdateProductFile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      medicines: []
+      medicines: [],
+      allMedicine: []
     };
+
+    this.refreshMedicineList = this.refreshMedicineList.bind(this);
+    this.filterMedicineList = this.filterMedicineList.bind(this);
+  }
+
+  filterMedicineList(event) {
+    let typedString = event.target.value.trim();
+    console.log(typedString);
+    console.log(this.state.medicines);
+
+    let filteredArray = this.state.allMedicine.filter(value =>
+      value.tradeName.toLowerCase().includes(typedString.toLowerCase())
+    );
+
+    console.log(filteredArray);
+
+    if (typedString.length == 0) {
+      this.setState({ medicines: this.state.allMedicine });
+    } else {
+      this.setState({ medicines: filteredArray });
+    }
+  }
+
+  componentDidMount() {
+    this.refreshMedicineList();
+  }
+
+  refreshMedicineList() {
+    MedicineService.retrieveAllMedicines().then(response =>
+      this.setState({ medicines: response.data, allMedicine: response.data })
+    );
   }
 
   handleOnDrop = (files, rejectedFiles) => {
@@ -68,7 +100,7 @@ class UpdateProductFile extends Component {
           arrayOfMedicinearrys[i][3].length < 1
             ? null
             : parseInt(arrayOfMedicinearrys[i][3]),
-        tradeNum: arrayOfMedicinearrys[i][4],
+        tradeName: arrayOfMedicinearrys[i][4],
         packSize: arrayOfMedicinearrys[i][5],
         packSizeNumber: parseInt(arrayOfMedicinearrys[i][6]),
         packSizeUnits: arrayOfMedicinearrys[i][7],
@@ -127,19 +159,16 @@ class UpdateProductFile extends Component {
       arrayOfMedObjs.push(medObj);
     }
 
-    this.setState({
-      medicines: arrayOfMedObjs
-    });
     // console.log(arrayOfMedObjs);
-    console.log(this.state.medicines[0]);
+    console.log(arrayOfMedObjs[0]);
 
-    this.sendObjsToREST(this.state.medicines[0]);
+    this.sendObjsToREST(arrayOfMedObjs);
   };
 
-  sendObjsToREST = medObj => {
-    MedicineService.sendMedToRest(medObj)
-      .then(re => console.log(re))
-      .catch(alert("oh well"));
+  sendObjsToREST = medList => {
+    MedicineService.sendMedToRest(medList)
+      .then(this.refreshMedicineList)
+      .catch(this.refreshMedicineList);
   };
 
   //Takes in String and returns an array of arrays.
@@ -209,7 +238,9 @@ class UpdateProductFile extends Component {
   render() {
     return (
       <div>
-        <h1>File dropper</h1>
+        <div text-color="">
+          <h1>File dropper</h1>
+        </div>
 
         <Dropzone onDrop={this.handleOnDrop} multiple={false} accept=".csv">
           {({ getRootProps, getInputProps }) => (
@@ -219,7 +250,7 @@ class UpdateProductFile extends Component {
                 style={{
                   border: "3px",
                   borderStyle: "solid",
-                  borderColor: "#FF0000",
+                  borderColor: "#28a745",
                   padding: "1em"
                 }}
               >
@@ -229,8 +260,58 @@ class UpdateProductFile extends Component {
             </div>
           )}
         </Dropzone>
-
-        <h1>Table here of current medicine data list</h1>
+        {/* <h1>Table here of current medicine data list</h1> */}
+        <div className="container">
+          <div align="right">
+            <input
+              id="search-input"
+              type="text"
+              onChange={this.filterMedicineList}
+              placeholder="Medicine Trade Name"
+            />
+          </div>
+          <div className="container">
+            <button
+              className="btn btn-success"
+              onClick={() => alert("You havent done this yet retard")}
+            >
+              Add New Medicine
+            </button>
+          </div>
+          {this.state.medicines.length >= 1 && (
+            <table className="table table-bordered border- table-hover">
+              <thead>
+                <tr className="bg-success text-white">
+                  <th>Trade Name</th>
+                  <th>Pack Size</th>
+                  <th>Generic Name</th>
+                  <th>Form of drug</th>
+                  <th>Ingredient One</th>
+                  <th>Ingredient Two</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.medicines.map(medicine => (
+                  <tr
+                    key={medicine.barcode}
+                    onClick={
+                      () =>
+                        this.props.history.push(`/medicine/${medicine.barcode}`)
+                      //console.log("sssssssss")
+                    }
+                  >
+                    <td>{medicine.tradeName}</td>
+                    <td>{medicine.packSize}</td>
+                    <td>{medicine.genericName}</td>
+                    <td>{medicine.formsOfDrug}</td>
+                    <td>{medicine.ingredientOne}</td>
+                    <td>{medicine.ingredientTwo}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
     );
   }

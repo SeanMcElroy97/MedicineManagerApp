@@ -12,6 +12,11 @@ import PatientComponent from "../Patients/PatientComponent.jsx";
 
 // import AuthenticationService from "../../Authentication/AuthenticationService.js";
 import AuthenticatedRoute from "../../Authentication/AuthenticatedRoute.jsx";
+import MedicineComponent from "../Medicine/MedicineComponent.jsx";
+
+//Prescription imports
+import prescriptionListComponent from "../Prescription/PrescriptionListComponent.jsx";
+import PrescriptionComponent from "../Prescription/PrescriptionComponent.jsx";
 
 export default class MedicineManagerApp extends Component {
   render() {
@@ -23,9 +28,17 @@ export default class MedicineManagerApp extends Component {
           <Route path="/login" component={LoginComponent} />
           <AuthenticatedRoute path="/home" component={HomeComponent} />
           <AuthenticatedRoute path="/signout" component={LoginComponent} />
+
           <AuthenticatedRoute
-            path="/productfile"
+            path="/medicine"
+            exact
             component={UpdateProductFile}
+          />
+
+          <AuthenticatedRoute
+            path="/medicine/:idBarcode"
+            exact
+            component={MedicineComponent}
           />
 
           <AuthenticatedRoute
@@ -36,6 +49,18 @@ export default class MedicineManagerApp extends Component {
             path="/patients"
             exact
             component={PatientListComponent}
+          />
+
+          <AuthenticatedRoute
+            path="/prescriptions"
+            exact
+            component={prescriptionListComponent}
+          />
+
+          <AuthenticatedRoute
+            path="/prescriptions/:id"
+            exact
+            component={PrescriptionComponent}
           />
 
           <AuthenticatedRoute component={ErrorComponent} />
