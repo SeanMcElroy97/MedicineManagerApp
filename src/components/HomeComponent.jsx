@@ -65,7 +65,7 @@ export default class HomeComponent extends Component {
             </div>
 
             <div className="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-              <div class={this.state.covid19Hover == false ? "card h-100 green-card-lt" : "card h-100 border-success card-shadow green-card"} onClick={() => alert('Covid main component here')} onMouseEnter={() => this.setState({ covid19Hover: true })} onMouseLeave={() => this.setState({ covid19Hover: false })}>
+              <div class={this.state.covid19Hover == false ? "card h-100 green-card-lt" : "card h-100 border-success card-shadow green-card"} onClick={() => this.props.history.push("/covid19")} onMouseEnter={() => this.setState({ covid19Hover: true })} onMouseLeave={() => this.setState({ covid19Hover: false })}>
                 <div class="card-body text-center">
                   {/* <i class="fas fa-virus" style={{ fontSize: 90, color: "#5cb85c" }} /> */}
                   {this.state.covid19Hover == false ? <img src='/images/virus_logo.png' height="100" /> : <img src='/images/virus_logo.png' height="120" />}
