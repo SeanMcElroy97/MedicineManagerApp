@@ -26,3 +26,18 @@
   height: 25vh;
   object-fit: cover;
 }
+
+.covid-card-confirmed{
+  margin: 0 2% !important;
+  border-bottom: 10px solid rgba(0,0,255,0.5);
+}
+
+.covid-card-deaths{
+  margin: 0 2% !important;
+  border-bottom: 10px solid rgba(255,0,0,0.5);
+}
+
+.covid-card-recovered{
+  margin: 0 2% !important;
+  border-bottom: 10px solid rgba(0,255,0,0.5);
+}
