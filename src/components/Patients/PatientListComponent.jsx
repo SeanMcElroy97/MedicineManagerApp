@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import React, { Component } from "../../../node_modules/react";
 import PatientService from "../../api/PatientService";
-import SearchIcon from "@material-ui/icons/Search";
+import SearchIcon from "../../../node_modules/@material-ui/icons/Search";
+
 
 export default class patientListComponent extends Component {
   constructor(props) {

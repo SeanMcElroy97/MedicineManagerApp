@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import React, { Component } from "../../../node_modules/react";
+import { Formik, Field, Form, ErrorMessage } from "../../../node_modules/formik";
 import PatientService from "../../api/PatientService";
 
 class PatientComponent extends Component {

@@ -12,16 +12,6 @@ class PrescriptionService {
     ).then(response => console.log(response));
   }
 
-  // addAPrescription(prescription) {
-  //   return Axios.post(
-  //     URL +
-  //       "/users/" +
-  //       sessionStorage.getItem("authenticatedUser") +
-  //       "/prescription/addy",
-  //     prescription
-  //   ).then(response => console.log(response));
-  // }
-
   postAPrescription(prescription) {
     return Axios.post(
       URL +
@@ -39,6 +29,10 @@ class PrescriptionService {
       sessionStorage.getItem("authenticatedUser") +
       "/prescription/all"
     );
+  }
+
+  retrieveAPrescriptionById(prescriptionID) {
+    return Axios.get(URL + "/users/" + sessionStorage.getItem("authenticatedUser") + "/prescription/" + prescriptionID);
   }
 }
 

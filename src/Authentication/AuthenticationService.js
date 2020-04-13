@@ -12,6 +12,13 @@ class AuthenticationService {
     if (user === null) return false;
     return true;
   }
+
+  newUserRegister(pharmacyEmail, pharmacyPassword) {
+    //Params
+    //1.EndPoint to hit. 
+    //2.Data to send. 
+    //3.Allow API to set cookie
+  }
 }
 
 //export an instance of Authentication helper classes

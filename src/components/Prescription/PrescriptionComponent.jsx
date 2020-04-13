@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { Component } from "../../../node_modules/react";
 import PatientService from "../../api/PatientService";
 import MedicineService from "../../api/MedicineService";
 import PrescriptionService from "../../api/PrescriptionService";
-import { Formik, Field, Form, FieldArray } from "formik";
+import { Formik, Field, Form, FieldArray } from "../../../node_modules/formik";
 
 export default class PrescriptionComponent extends Component {
   constructor(props) {
@@ -13,9 +13,10 @@ export default class PrescriptionComponent extends Component {
       availableMedicine: [],
       patientOnPrescription: {},
       IdPatientOnPrescription: "",
-      prescriptionLineItems: [{ medicineItem: {}, qty: 0 }],
+      prescriptionLineItems: [{ id: '', medicine: {}, qty: 0 }],
       instructions: "",
-      statusOfPrescription: ""
+      statusOfPrescription: "",
+      disableEdit: true
     };
 
     this.getAvailablePatients = this.getAvailablePatients.bind(this);
@@ -39,43 +40,53 @@ export default class PrescriptionComponent extends Component {
   }
 
   componentDidMount() {
+    if (this.state.prescriptionId === -1) {
+      this.setState({
+        disableEdit: false
+      })
+    } else {
+      PrescriptionService.retrieveAPrescriptionById(this.state.prescriptionId).then(response => (
+        this.setState({
+          patientOnPrescription: response.data.patientOnPrescription,
+          prescriptionLineItems: response.data.items,
+          instructions: response.data.instructions,
+          statusOfPrescription: response.data.status
+        }),
+        console.log('response data here'),
+        console.log(response.data)
+      )
+      )
+    }
     this.getAvailablePatients();
     this.getAvailableMedicine();
-    PrescriptionService.executeTest().then(
-      console.log(this.state.availableMedicine)
-    );
-  }
-
-  randomPrescription() {
-    let prescription = {
-      IdPatientOnPrescription: this.state.availablePatients[0],
-      medicinesPrescribed: [
-        this.state.availableMedicine[0],
-        this.state.availableMedicine[1]
-      ],
-      instructions: "random prescriptions instructions"
-    };
-
-    //console.log(prescription);
-    PrescriptionService.addAPrescription(prescription);
   }
 
   submitPrescription(values) {
-    let patient = this.state.availablePatients.find(pat => pat.patientId === Number(values.IdPatientOnPrescription));
-    let preLineItems = values.medicines.map(this.getPrescriptionLineItems);
-    let status = values.status;
+    // let patient = this.state.availablePatients.find(pat => pat.patientId === Number(values.IdPatientOnPrescription));
+    // let preLineItems = values.medicines.map(this.getPrescriptionLineItems);
+    // let status = values.status;
+    // let instructions = values.instructions;
+
+    let patient = values.patientOnPrescription;
+    let lineItemsOnPre = values.prescriptionLineItems;
     let instructions = values.instructions;
+    let status = values.status;
 
     let prescription = {
       prescriptionId: this.state.prescriptionId,
       patientOnPrescription: patient,
-      items: preLineItems,
+      items: lineItemsOnPre,
       instructions: instructions,
       status: status
     }
 
-    //if id = -1. i.e. new prescription 
-    PrescriptionService.postAPrescription(prescription)
+    if (prescription.prescriptionId == -1) {
+      PrescriptionService.postAPrescription(prescription)
+    } else {
+      alert('update prescription hit')
+      console.log('gonna post this prescription')
+      console.log(prescription)
+    }
   }
 
   getPrescriptionLineItems(item) {
@@ -85,36 +96,45 @@ export default class PrescriptionComponent extends Component {
 
   render() {
     let isDisabledEditing = false;
-
     return (
       <>
-
-        <button className="btn btn-danger" onClick={this.randomPrescription}>
-          TEST PRESCRIPTION POST
-        </button>
-        <div className="container"><h3>Prescription Component. id of this prescription is {this.state.prescriptionId}</h3></div>
+        <div className="container">
+          <button type="button" className='btn btn-dark' onClick={() => this.props.history.push("/prescriptions")}>Go back to All patients</button>
+          <h3>Prescription Component. id of this prescription is {this.state.prescriptionId}</h3>
+        </div>
         <Formik
           initialValues={{
-            IdPatientOnPrescription: this.state.patientOnPrescription.patientId,
-            medicines: this.state.prescriptionLineItems,
+            patientOnPrescription: this.state.patientOnPrescription,
+            prescriptionLineItems: this.state.prescriptionLineItems,
             instructions: this.state.instructions,
-            status: this.state.statusOfPrescription
+            status: this.state.statusOfPrescription,
+            disableEdit: this.state.disableEdit
           }}
           enableReinitialize={true}
           onSubmit={this.submitPrescription}
+
         >
           {({ values }) => (
+
             <Form>
+              {console.log('editable eqwals ' + values.editable)}
               <div className="container">
                 <fieldset className="form-group">
                   <h4><label>Patient</label></h4>
                   <Field
                     className="form-control"
                     as="select"
-                    name="IdPatientOnPrescription"
+                    name="patientOnPrescription"
+                    disabled={values.disableEdit}
                   >
-                    <option value="">Choose a Patient</option>
-                    {this.state.availablePatients.map((patient, index) => {
+                    <option value={values.patientOnPrescription.patientId}>{values.patientOnPrescription.patientFirstName +
+                      "  ||  " +
+                      values.patientOnPrescription.patientSurname +
+                      "  ||  (D.O.B) " +
+                      values.patientOnPrescription.dateOfBirth +
+                      "  ||  (Patient ID) " +
+                      values.patientOnPrescription.patientId}</option>
+                    {this.state.availablePatients.map((patient) => {
                       return (
                         <option value={patient.patientId}>
                           {patient.patientFirstName +
@@ -131,33 +151,34 @@ export default class PrescriptionComponent extends Component {
                 </fieldset>
               </div>
 
-              <FieldArray name="medicines">
+              {/* Each Line item */}
+              <FieldArray name="prescriptionLineItems">
                 {arrayHelpers => (
                   <>
-                    {/* For each medicine on prescription*/}
-                    {values.medicines.map((med, index) => {
+                    {/* For each medicine on PRESCRIPTION*/}
+                    {values.prescriptionLineItems.map((lineItem, index) => {
                       return (
                         <div className="container">
-                          <div key={med.medicineItem} className="form-row">
+                          {console.log(`lineItem obj : ${index}`)}
+                          {console.log(lineItem)}
+                          <div key={lineItem.id} className="form-row">
                             {/* <label>{`Medicine Item ${index + 1}`}</label> */}
                             <div className="col-9">
                               <h4><label>{`Medicine Item ${index + 1}`}</label></h4>
                               <Field
                                 as="select"
-                                name={`medicines[${index}].medicineItem.medicineBarcode`}
+                                name={`prescriptionLineItems[${index}].medicine`}
                                 className="form-control"
+                                disabled={values.disableEdit}
                               >
-                                <option value="">Choose a  prescription Line Item</option>
+                                <option value={lineItem.medicine.barcode}>{lineItem.medicine.tradeName}</option>
                                 {/* this will cycle through available medicine to choose from */}
                                 {this.state.availableMedicine.map(
-                                  (availableMedicine, index) => {
+                                  (availableMed) => {
                                     return (
-                                      <option
-                                        // value={availableMedicine.medicineBarcode}
-                                        value={availableMedicine.barcode}
-                                      >
+                                      <option value={availableMed.barcode}>
                                         {/* What user sees in dropdown */}
-                                        {availableMedicine.tradeName}
+                                        {availableMed.tradeName}
                                       </option>
                                     );
                                   }
@@ -169,24 +190,21 @@ export default class PrescriptionComponent extends Component {
                               <Field
                                 className="form-control"
                                 type="number"
-                                name={`medicines[${index}].qty`}
-                                disabled={isDisabledEditing}
+                                name={`prescriptionLineItems[${index}].quantity`}
+                                disabled={values.disableEdit}
                               />
                             </div>
                           </div>
                         </div>
+
                       );
                     })}
                     <div className="container">
                       <button
                         className="btn btn-outline-info btn-sm"
                         type="button"
-                        onClick={() =>
-                          arrayHelpers.push({
-                          })
-                        }
-                      >
-                        Add Medicine Item
+                        onClick={() => (values.disableEdit == false && arrayHelpers.push({ id: -1, medicine: {}, quantity: 1 }))}>
+                        Add Prescription Line Item
                       </button>
                     </div>
                   </>
@@ -200,7 +218,7 @@ export default class PrescriptionComponent extends Component {
                   as="textarea"
                   rows="4"
                   name="instructions"
-                  disabled={isDisabledEditing}
+                  disabled={values.disableEdit}
                 />
               </div>
 
@@ -220,22 +238,34 @@ export default class PrescriptionComponent extends Component {
                 </div>
               </div>
 
+              {this.state.prescriptionId == -1 &&
+                <div className="container">
+                  <button
+                    className="btn  btn-success btn-lg btn-block"
+                    type="submit"
+                  >
+                    Create Prescription
+                    </button>
+                </div>}
 
-              <div className="container">
-                <button
-                  className="btn  btn-success btn-lg btn-block"
-                  type="submit"
-                >
-                  Create Prescription
-                </button>
-              </div>
+              {this.state.prescriptionId != -1 &&
+                <div className="container">
+                  <button
+                    className="btn  btn-success btn-lg btn-block"
+                    type="submit"
+                  >
+                    Update Prescription
+                    </button>
+                </div>}
               <pre>{JSON.stringify(values, null, 2)}</pre>
-              <pre>{JSON.stringify(this.state.instructions, null, 2)}</pre>
-              {/* <pre>{JSON.stringify(this.state.availablePatients, null, 2)}</pre> */}
+
             </Form>
           )}
         </Formik>
       </>
     );
   }
+
 }
+
+

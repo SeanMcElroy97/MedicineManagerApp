@@ -180,14 +180,14 @@ class UpdateProductFile extends Component {
     var objPattern = new RegExp(
       // Delimiters.
       "(\\" +
-        strDelimiter +
-        "|\\r?\\n|\\r|^)" +
-        // Quoted fields.
-        '(?:"([^"]*(?:""[^"]*)*)"|' +
-        // Standard fields.
-        '([^"\\' +
-        strDelimiter +
-        "\\r\\n]*))",
+      strDelimiter +
+      "|\\r?\\n|\\r|^)" +
+      // Quoted fields.
+      '(?:"([^"]*(?:""[^"]*)*)"|' +
+      // Standard fields.
+      '([^"\\' +
+      strDelimiter +
+      "\\r\\n]*))",
       "gi"
     );
 
@@ -249,7 +249,7 @@ class UpdateProductFile extends Component {
               <p
                 style={{
                   border: "3px",
-                  borderStyle: "solid",
+                  borderStyle: "dashed",
                   borderColor: "#28a745",
                   padding: "1em"
                 }}
@@ -273,7 +273,7 @@ class UpdateProductFile extends Component {
           <div className="container">
             <button
               className="btn btn-success"
-              onClick={() => alert("You havent done this yet retard")}
+              onClick={() => alert("You havent done this yet")}
             >
               Add New Medicine
             </button>

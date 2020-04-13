@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { Component } from "../../../node_modules/react";
 import MedicineService from "../../api/MedicineService";
-import { Formik, Field, Form } from "formik";
+import { Formik, Field, Form } from "../../../node_modules/formik";
 
 class MedicineComponent extends Component {
   constructor(props) {

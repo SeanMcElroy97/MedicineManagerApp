@@ -1,22 +1,28 @@
 import React, { Component } from "react";
 
-import LoginComponent from "../LoginComponent.jsx";
+
 import HeaderComponent from "../HeaderComponent.jsx";
+
+import LandingPageComponent from "../signingIn/LandingPageComponent.jsx";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import HomeComponent from "../HomeComponent.jsx";
 import UpdateProductFile from "../UpdateProductFile.jsx";
-import PatientListComponent from "../Patients/PatientListComponent.jsx";
+import PatientListComponent from "../patients/PatientListComponent.jsx";
 import ErrorComponent from "../ErrorComponent.jsx";
-import PatientComponent from "../Patients/PatientComponent.jsx";
+import PatientComponent from "../patients/PatientComponent.jsx";
 
 // import AuthenticationService from "../../Authentication/AuthenticationService.js";
 import AuthenticatedRoute from "../../Authentication/AuthenticatedRoute.jsx";
-import MedicineComponent from "../Medicine/MedicineComponent.jsx";
+import MedicineComponent from "../medicine/MedicineComponent.jsx";
 
 //Prescription imports
-import prescriptionListComponent from "../Prescription/PrescriptionListComponent.jsx";
-import PrescriptionComponent from "../Prescription/PrescriptionComponent.jsx";
+import prescriptionListComponent from "../prescription/PrescriptionListComponent.jsx";
+import PrescriptionComponent from "../prescription/PrescriptionComponent.jsx";
+
+
+//Covid imports
+import Covid19MainComponent from "../covid19/Covid19MainComponent.jsx";
 
 export default class MedicineManagerApp extends Component {
   render() {
@@ -24,10 +30,10 @@ export default class MedicineManagerApp extends Component {
       <Router>
         <HeaderComponent />
         <Switch>
-          <Route path="/" exact component={LoginComponent} />
-          <Route path="/login" component={LoginComponent} />
+          <Route path="/" exact component={LandingPageComponent} />
+          <Route path="/login" component={LandingPageComponent} />
           <AuthenticatedRoute path="/home" component={HomeComponent} />
-          <AuthenticatedRoute path="/signout" component={LoginComponent} />
+          <AuthenticatedRoute path="/signout" component={LandingPageComponent} />
 
           <AuthenticatedRoute
             path="/medicine"
@@ -63,8 +69,14 @@ export default class MedicineManagerApp extends Component {
             component={PrescriptionComponent}
           />
 
+          <AuthenticatedRoute
+            path="/covid19"
+            exact
+            component={Covid19MainComponent}
+          />
+
           <AuthenticatedRoute component={ErrorComponent} />
-          <Route component={LoginComponent} />
+          <Route component={LandingPageComponent} />
         </Switch>
       </Router>
     );
