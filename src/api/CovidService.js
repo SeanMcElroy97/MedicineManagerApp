@@ -30,6 +30,10 @@ class CovidService {
     return Axios.get(URL + "/covid19/GlobalDailyNumbers")
   }
 
+  fetchCountryDailyNumbersSpring() {
+    return Axios.get(URL + "/covid19/countryDailyStats")
+  }
+
 
 }
 
