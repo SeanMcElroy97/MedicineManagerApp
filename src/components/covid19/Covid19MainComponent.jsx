@@ -1,19 +1,24 @@
 import React from 'react';
 import CovidService from "../../api/CovidService.js";
 import CountUp from 'react-countup';
+import { Line, Bar } from 'react-chartjs-2';
 
 import { Card, CardContent, Typography, Grid } from '@material-ui/core';
 
 class Covid19MainComponent extends React.Component {
 
-
-    state = {
-        covid19GlobalCases: 0,
-        covid19GlobalDeaths: 0,
-        covid19GlobalRecoveries: 0,
-        todaysDate: new Date()
+    constructor(props) {
+        super(props);
+        this.state = {
+            covid19GlobalCases: 0,
+            covid19GlobalDeaths: 0,
+            covid19GlobalRecoveries: 0,
+            dailyData: [],
+            globalDailyData: [],
+            todaysDate: new Date()
+        }
+        this.sortGlobalData = this.sortGlobalData.bind(this);
     }
-
 
     async componentDidMount() {
         CovidService.retrieveGlobalTotals()
@@ -21,8 +26,27 @@ class Covid19MainComponent extends React.Component {
         // .then(response => console.log(response));
 
         CovidService.fetchDailyNumbersSampleAPI()
-            .then(response => console.log(response))
+            .then(response => this.setState({ dailyData: response.data }))
 
+        CovidService.fetchDailyNumbersSpring()
+            .then(response => this.setState({ globalDailyData: this.sortGlobalData(response.data) }))
+        //.then(response => this.setState({ globalDailyData: this.sortedGlobalData(response.data) }))
+
+
+    }
+
+
+    sortGlobalData(unsortedArr) {
+        unsortedArr.sort((a, b) => {
+            if (a.reportDate.split("/").reverse() > b.reportDate.split("/").reverse()) {
+                return 1
+            } else {
+                return -1
+            }
+            // return (a.reportDate > b.reportDate) ? 1 : -1
+        })
+
+        return unsortedArr
     }
 
 
@@ -61,6 +85,20 @@ class Covid19MainComponent extends React.Component {
                         </CardContent>
                     </Grid>
                 </Grid>
+
+                <div className={"mt-5"}>
+                    <Line data={{
+                        labels: this.state.globalDailyData.map((dataDay) => dataDay.reportDate),
+                        //labels: this.state.dailyData.map((dataDay) => dataDay.reportDate),
+                        datasets: [
+                            { data: this.state.globalDailyData.map((dataDay) => dataDay.numberOfGlobalCases), label: "confirmed", borderColor: '#3333ff', fill: true },
+                            { data: this.state.globalDailyData.map((dataDay) => dataDay.numberOfGlobalDeaths), label: "Deaths", borderColor: 'red', backgroundColor: 'rgba(255,0,0,0.5)', fill: true },
+                            { data: this.state.globalDailyData.map((dataDay) => dataDay.numberOfGlobalRecoveries), label: "Recovered", borderColor: 'green', backgroundColor: 'rgba(0,255,0,0.5)', fill: true }]
+                    }}
+                    />
+                </div>
+
+
             </div>
         )
     }

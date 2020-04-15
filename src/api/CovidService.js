@@ -26,6 +26,10 @@ class CovidService {
     return Axios.get("https://covid19.mathdro.id/api/daily")
   }
 
+  fetchDailyNumbersSpring() {
+    return Axios.get(URL + "/covid19/GlobalDailyNumbers")
+  }
+
 
 }
 
