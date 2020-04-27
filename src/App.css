@@ -42,4 +42,7 @@
   border-bottom: 10px solid rgba(0,255,0,0.5);
 }
 
+tr:hover{
+  background-color: #09d3ac;
+}
 

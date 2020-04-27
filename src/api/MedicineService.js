@@ -1,27 +1,39 @@
-import { URL, URLwithID } from "../Constants";
+import { URL } from "../Constants";
 import Axios from "axios";
 
 class MedicineService {
   executeTest() {
     //returns a PromisObj
-    return Axios.get(URLwithID + "/medicine/testmed");
+    return Axios.get(URL + "/medicine/test");
     //   .then(response => console.log(response))
     //   .catch(alert("didnt work m8"));
   }
 
-  sendMedToRest(medObj) {
-    return Axios.post(URLwithID + "/medicine/addMeds", medObj);
+  adminPOSTMedList(medItemList) {
+    return Axios.post(URL + "/admin/updateMedList", medItemList);
   }
 
-  retrieveAllMedicines() {
-    console.log(URLwithID);
-    return Axios.get(URLwithID + "/medicine/all");
-  }
-
-  //retrieveMedbyID
-  retrieveMedByID(medID) {
+  adminRetrieveAllMedicines() {
     //console.log(URLwithID);
-    return Axios.get(URLwithID + "/medicine/" + medID);
+    return Axios.get(URL + "/admin/retrieveAllMedItems");
+  }
+
+
+
+
+
+  //Pharmacy
+
+  testPharmacyMethod() {
+    return Axios.get(URL + '/pharmacy/test');
+  }
+
+  fetchPharmacyStock() {
+    return Axios.get(URL + '/pharmacy/allStock');
+  }
+
+  fetchMedicineByBarcode(barcode) {
+    return Axios.get(URL + "/pharmacy/medicine/" + barcode);
   }
 }
 

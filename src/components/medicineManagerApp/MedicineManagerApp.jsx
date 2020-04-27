@@ -7,14 +7,22 @@ import LandingPageComponent from "../signingIn/LandingPageComponent.jsx";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import HomeComponent from "../HomeComponent.jsx";
-import UpdateProductFile from "../UpdateProductFile.jsx";
+
 import PatientListComponent from "../patients/PatientListComponent.jsx";
 import ErrorComponent from "../ErrorComponent.jsx";
 import PatientComponent from "../patients/PatientComponent.jsx";
 
-// import AuthenticationService from "../../Authentication/AuthenticationService.js";
+// import AuthenticationService
 import AuthenticatedRoute from "../../Authentication/AuthenticatedRoute.jsx";
-import MedicineComponent from "../medicine/MedicineComponent.jsx";
+
+
+//Admin Components
+import AdminMedicineMainComponent from "../admin/AdminMedicineMainComponent.jsx";
+
+//Medicine Imports
+// import MedicineMainComponent from "../admin/AdminMedicineMainComponent.jsx";
+import MedicineStockList from "../medicine/medicineStockList";
+import MedicineItem from "../medicine/MedicineItem.jsx";
 
 //Prescription imports
 import prescriptionListComponent from "../prescription/PrescriptionListComponent.jsx";
@@ -35,16 +43,23 @@ export default class MedicineManagerApp extends Component {
           <AuthenticatedRoute path="/home" component={HomeComponent} />
           <AuthenticatedRoute path="/signout" component={LandingPageComponent} />
 
+          {/* Admin Route */}
           <AuthenticatedRoute
-            path="/medicine"
+            path="/adminmedicinefile"
             exact
-            component={UpdateProductFile}
+            component={AdminMedicineMainComponent}
           />
 
           <AuthenticatedRoute
-            path="/medicine/:idBarcode"
+            path="/medicineStockList"
             exact
-            component={MedicineComponent}
+            component={MedicineStockList}
+          />
+
+          <AuthenticatedRoute
+            path="/medicine/:barcode"
+            exact
+            component={MedicineItem}
           />
 
           <AuthenticatedRoute

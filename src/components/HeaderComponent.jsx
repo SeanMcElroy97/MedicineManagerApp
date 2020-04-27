@@ -19,10 +19,10 @@ class HeaderComponent extends Component {
             )}
 
             {userLoggedIn && (
-              <Link to="/notifications">
+              <Link to="/adminmedicinefile">
                 <li
                   className="nav-link"
-                  onClick={() => console.log("showing notifications")}
+                // onClick={() => this.props.history.push("/adminmedicinefile")}
                 >
                   Notifications
                 </li>

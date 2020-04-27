@@ -72,7 +72,22 @@ export default class LoginComponent extends Component {
       );
 
       //console.log(this.props.history);
-      this.props.history.push(`/home/${this.state.pharmEmail}`);
+      // this.props.history.push(`/home/${this.state.pharmEmail}`);
+      this.props.history.push('/pharmacy')
+
+    }
+
+
+    if (values.pharmacyEmailInput === "Admin" && values.pharmacyPasswordInput === "password") {
+
+      this.setState({ pharmEmail: values.pharmacyEmailInput, pharmPassword: values.pharmacyPasswordInput });
+
+      AuthenticationService.registerSuccessfulLogin(
+        this.state.pharmEmail,
+        this.state.pharmPassword
+      );
+
+      this.props.history.push('/pharmacy')
 
     }
 

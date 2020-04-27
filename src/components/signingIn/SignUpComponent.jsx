@@ -1,18 +1,21 @@
 import React, { Component } from "../../../node_modules/react";
 import { Formik, Field, Form, ErrorMessage } from "../../../node_modules/formik";
+import AuthenticationService from "../../Authentication/AuthenticationService"
 
 
 export default class SignUpComponent extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            pharmacyEmail: '',
-            pharmacyPassword: '',
-            psiRegistrationNumber: '',
-            pharmacyName: '',
-            pharmacyContactNum: '',
-            pharmacyAddress: ''
-        }
+        // this.state = {
+        //     pharmacyEmail: '',
+        //     pharmacyPassword: '',
+        //     psiRegistrationNumber: '',
+        //     pharmacyName: '',
+        //     pharmacyContactNum: '',
+        //     pharmacyAddress: ''
+        // }
+
+        this.submitNewUserToAPI = this.submitNewUserToAPI.bind(this)
     }
 
     render() {
@@ -21,77 +24,77 @@ export default class SignUpComponent extends Component {
 
             <Formik
                 initialValues={{
-                    pharmacyEmailInput: this.state.pharmacyEmail,
-                    pharmacyPasswordInput: this.state.pharmacyPassword,
-                    psiRegistrationNumberInput: this.state.psiRegistrationNumber,
-                    pharmacyNameInput: this.state.pharmacyName,
-                    pharmacyContactNumInput: this.state.pharmacyContactNum,
-                    pharmacyAddressInput: this.state.pharmacyAddress
+                    pharmacyEmail: '',
+                    pharmacyPassword: '',
+                    psiRegistrationNumber: '',
+                    pharmacyName: '',
+                    pharmacyContactNum: '',
+                    pharmacyAddress: ''
                 }}
-                onSubmit={() => console.log('sign up button hit')}>
+                onSubmit={(formData) => this.submitNewUserToAPI(formData)}>
 
-                {({ values }) => (
+                {() => (
                     <Form>
-                        <div className="form-row">
-
-                            <div className="form-group col-md-6">
-                                <Field
-                                    className="form-control"
-                                    name="pharmacyNameInput"
-                                    placeholder="Pharmacy Name"
-                                />
-                            </div>
-                            <div className="form-group col-md-6">
-                                <Field
-                                    className="form-control"
-                                    name="psiRegistrationNumberInput"
-                                    placeholder="PSI Registration Number"
-                                />
-                            </div>
-
-
-
-                        </div>
-
                         <div className="form-group">
                             <Field
                                 className="form-control"
-                                name="pharmacyEmailInput"
+                                name="pharmacyEmail"
+                                type="input"
                                 placeholder="Email"
                             />
                         </div>
-
-                        <div className="form-group">
+                        <div className="form-group ">
                             <Field
                                 className="form-control"
-                                name="pharmacyPasswordInput"
-                                placeholder="New password"
+                                name="pharmacyName"
+                                placeholder="Pharmacy Name"
                             />
                         </div>
                         <div className="form-group">
                             <Field
                                 className="form-control"
-                                name="pharmacyContactNumInput"
+                                name="psiRegistrationNumber"
+                                placeholder="PSI Registration Number"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <Field
+                                className="form-control"
+                                name="pharmacyPassword"
+                                placeholder="Password"
+                                type="password"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <Field
+                                className="form-control"
+                                name="pharmacyContactNum"
                                 placeholder="Contact Number"
                             />
                         </div>
                         <div className="form-group">
                             <Field
                                 className="form-control"
-                                name="pharmacyAddressInput"
+                                name="pharmacyAddress"
                                 placeholder="Pharmacy Address"
                             />
                         </div>
 
-                        <button type="submit" class="btn btn-success">Sign up</button>
+                        <button type="submit" className="btn btn-success">Sign up</button>
                     </Form>
                 )}
             </Formik>
+
         </div>);
     }
 
 
     //Call this when user details pass validation
-    submitNewUserToAPI() { }
+    submitNewUserToAPI(formdata) {
+
+        AuthenticationService.newPharmacyPost(formdata)
+        this.props.history.push(`/home/${formdata.pharmacyEmail}`)
+    }
 
 }

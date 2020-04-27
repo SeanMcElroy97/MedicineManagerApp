@@ -9,21 +9,21 @@ export default class patientListComponent extends Component {
     this.state = {
       patients: [],
       allPatients: []
-      //filteredPatients: []
     };
-    this.addPatient = this.addPatient.bind(this);
+    this.getMyPatients = this.getMyPatients.bind(this);
     this.filterPatientList = this.filterPatientList.bind(this);
+
   }
 
   componentDidMount() {
     console.log("component mounting");
-    PatientService.retrieveAllpatients().then(response =>
-      this.setState({ patients: response.data, allPatients: response.data })
-    );
+    this.getMyPatients();
+  }
 
-    // PatientService.retrieveAllpatients().then(response =>
-    //   console.log(response)
-    // );
+  getMyPatients() {
+    PatientService.fetchMyPatients()
+      .then(response => console.log(response.data))
+      .catch(() => alert('Couldnt retrieve your patients'))
   }
 
   filterPatientList(event) {

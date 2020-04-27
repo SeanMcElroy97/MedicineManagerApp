@@ -1,5 +1,8 @@
+import { URL, URLwithID } from "../Constants";
+import Axios from "axios";
+
 class AuthenticationService {
-  registerSuccessfulLogin(username, password) {
+  registerSuccessfulLogin(username) {
     sessionStorage.setItem("authenticatedUser", username);
   }
 
@@ -13,11 +16,19 @@ class AuthenticationService {
     return true;
   }
 
-  newUserRegister(pharmacyEmail, pharmacyPassword) {
+  newPharmacyPost(newPharmacy) {
     //Params
     //1.EndPoint to hit. 
     //2.Data to send. 
     //3.Allow API to set cookie
+
+    Axios.post(URL + "/newPharm", newPharmacy)
+      .then(this.registerSuccessfulLogin(newPharmacy.pharmacyEmail))
+  }
+
+  //Login
+  pharmacyLogin() {
+
   }
 }
 
