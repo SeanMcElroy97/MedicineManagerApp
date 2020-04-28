@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 
+import { StickyContainer, Sticky } from 'react-sticky';
 
 import HeaderComponent from "../HeaderComponent.jsx";
 
@@ -36,7 +37,9 @@ export default class MedicineManagerApp extends Component {
   render() {
     return (
       <Router>
+
         <HeaderComponent />
+
         <Switch>
           <Route path="/" exact component={LandingPageComponent} />
           <Route path="/login" component={LandingPageComponent} />
@@ -63,7 +66,7 @@ export default class MedicineManagerApp extends Component {
           />
 
           <AuthenticatedRoute
-            path="/patients/:id"
+            path="/patients/:patientID"
             component={PatientComponent}
           />
           <AuthenticatedRoute
@@ -79,7 +82,7 @@ export default class MedicineManagerApp extends Component {
           />
 
           <AuthenticatedRoute
-            path="/prescriptions/:id"
+            path="/prescriptions/:prescriptionID"
             exact
             component={PrescriptionComponent}
           />

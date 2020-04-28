@@ -4,7 +4,15 @@ import Axios from "axios";
 class PatientService {
 
   fetchMyPatients() {
-    return Axios.get(URL + '/pharmacy/test')
+    return Axios.get(URL + '/pharmacy/getMyPatients')
+  }
+
+  fetchPatientById(patientID) {
+    return 'hi'
+  }
+
+  fetchPatientPrescriptions(patientID) {
+    return Axios.get(URL + `/pharmacy/getPatientPrescriptions/${patientID}`)
   }
 }
 

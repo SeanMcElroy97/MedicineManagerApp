@@ -7,7 +7,7 @@ export default class patientListComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      patients: [],
+      displayedPatients: [],
       allPatients: []
     };
     this.getMyPatients = this.getMyPatients.bind(this);
@@ -22,7 +22,10 @@ export default class patientListComponent extends Component {
 
   getMyPatients() {
     PatientService.fetchMyPatients()
-      .then(response => console.log(response.data))
+      .then(response => {
+        this.setState({ displayedPatients: response.data, allPatients: response.data })
+        console.log(response.data)
+      })
       .catch(() => alert('Couldnt retrieve your patients'))
   }
 
@@ -32,7 +35,7 @@ export default class patientListComponent extends Component {
     //Doesnt work for backspace
 
     let filteredArray = this.state.allPatients.filter(value =>
-      value.patientFirstName.toLowerCase().includes(typedString.toLowerCase())
+      value.patientFirstName.toUpperCase().includes(typedString.toUpperCase())
     );
 
     console.log(typedString);
@@ -45,13 +48,6 @@ export default class patientListComponent extends Component {
     }
   }
 
-  goToPatient = patientID => {
-    console.log("goToPatientClicked");
-  };
-
-  addPatient() {
-    this.props.history.push("/patients/-1");
-  }
 
   render() {
     return (
@@ -67,19 +63,14 @@ export default class patientListComponent extends Component {
           />
         </div>
         <div className="container">
-          {this.state.patients.length < 1 && (
+          {this.state.displayedPatients.length < 1 && (
             <>
               <h1>You have no patients</h1>
               <button className="btn btn-success">Add New patient</button>
             </>
           )}
-          {this.state.patients.length >= 1 && (
-            <>
-              <div className="container">
-                <button className="btn btn-success btn-lg" onClick={this.addPatient}>
-                  Add New Patient
-                </button>
-              </div>
+          {this.state.displayedPatients.length >= 1 && (
+            <div className="container">
               <table className="table">
                 <thead>
                   <tr>
@@ -90,24 +81,20 @@ export default class patientListComponent extends Component {
                   </tr>
                 </thead>
                 <tbody id="myTable">
-                  {this.state.patients.map(patient => (
+                  {this.state.displayedPatients.map(patient => (
                     <tr
-                      key={patient.patientId}
-                      onClick={() =>
-                        this.props.history.push(
-                          `/patients/${patient.patientId}`
-                        )
-                      }
+                      key={patient.patientID}
+                      onClick={() => this.props.history.push(`/patients/${patient.patientID}`)}
                     >
-                      <td>{patient.patientFirstName}</td>
-                      <td>{patient.patientSurname}</td>
+                      <td>{patient.firstName}</td>
+                      <td>{patient.lastName}</td>
                       <td>{patient.dateOfBirth}</td>
-                      <td>{patient.address}</td>
+                      <td>{patient.patientAddress}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </>
+            </div>
           )}
         </div>
       </div>

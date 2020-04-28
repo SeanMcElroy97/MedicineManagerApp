@@ -2,38 +2,21 @@ import { URL } from "../Constants";
 import Axios from "axios";
 
 class PrescriptionService {
-  executeTest() {
-    //returns a PromisObj
-    return Axios.get(
-      URL +
-      "/users/" +
-      sessionStorage.getItem("authenticatedUser") +
-      "/prescription/test"
-    ).then(response => console.log(response));
+
+  fetchAllPrescriptions() {
+    return Axios.get(URL + '/pharmacy/getMyPrescriptions')
   }
 
-  postAPrescription(prescription) {
-    return Axios.post(
-      URL +
-      "/users/" +
-      sessionStorage.getItem("authenticatedUser") +
-      "/prescription/add",
-      prescription
-    ).then(response => console.log(response));
+  //Retrieves the prescription
+  fetchPrescriptionById(prescriptionID) {
+    return Axios.get(URL + `/pharmacy/getPrescription/${prescriptionID}`)
   }
 
-  retrieveAllPrescriptions() {
-    return Axios.get(
-      URL +
-      "/users/" +
-      sessionStorage.getItem("authenticatedUser") +
-      "/prescription/all"
-    );
+  //Retrieves 
+  fetchisPrescriptionEditable() {
+    return true;
   }
 
-  retrieveAPrescriptionById(prescriptionID) {
-    return Axios.get(URL + "/users/" + sessionStorage.getItem("authenticatedUser") + "/prescription/" + prescriptionID);
-  }
 }
 
 export default new PrescriptionService();

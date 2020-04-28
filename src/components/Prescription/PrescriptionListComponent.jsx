@@ -2,6 +2,9 @@ import React, { Component } from "../../../node_modules/react";
 import PatientService from "../../api/PatientService";
 import PrescriptionService from "../../api/PrescriptionService";
 import SearchIcon from "../../../node_modules/@material-ui/icons/Search";
+import { Card, CardContent, Typography, Grid } from '@material-ui/core';
+import CountUp from 'react-countup';
+
 
 export default class prescriptionListComponent extends Component {
   constructor(props) {
@@ -12,15 +15,15 @@ export default class prescriptionListComponent extends Component {
       beingPreparedChecked: false
     };
 
-    this.goToPrescriptionClicked = this.goToPrescriptionClicked.bind(this);
     this.filterPrescriptionList = this.filterPrescriptionList.bind(this);
   }
 
   componentDidMount() {
     console.log("component mounting");
-    PrescriptionService.retrieveAllPrescriptions().then(response =>
+    PrescriptionService.fetchAllPrescriptions().then(response => {
       this.setState({ prescriptions: response.data, prescriptionsOnDisplay: response.data })
-    );
+      console.log(response.data)
+    });
 
   }
 
@@ -40,73 +43,70 @@ export default class prescriptionListComponent extends Component {
     }
   }
 
-  goToPrescriptionClicked() {
-    this.props.history.push("/prescriptions/-1");
-  }
-
-  filterByPrescriptionStatus(statusStr) {
-
-    // if (statusStr.toLowerCase().equals("being prepared")) {
-    //   this.setState({ beingPreparedChecked: !beingPreparedChecked });
-    // }
-
-    // if (this.state.beingPreparedChecked == true) {
-    //   console.log(this.state.prescriptions)
-    //   let filteredByStatus = this.state.prescriptions.filter(value =>
-    //     value.status.toLowerCase().includes(statusStr.toLowerCase())
-    //   );
-
-    //   this.setState({ prescriptionsOnDisplay: filteredByStatus });
-    // } else {
-    //   this.setState({ prescriptionsOnDisplay: this.state.prescriptions });
-    // }
-  }
 
   render() {
     return (
-      <>
+
+      <div className="container">
+        <h1>Prescriptions</h1>
+
+
         <div className="container">
-          <h1>Prescriptions</h1>
+          <Grid container spacing={3} justify="center" >
+            <Grid item component={Card} xs={12} md={3} className={"covid-card-confirmed"}>
+              <CardContent>
+                <Typography color="textSecondary" gutterBottom>Your Prescriptions</Typography>
+                <Typography variant="h5">
+                  <CountUp start={0} end={this.state.prescriptions.length} duration={2.5} separator="," />
+                </Typography>
+                {/* <Typography color="textSecondary">{this.state.todaysDate.toDateString()} 02:00 AM</Typography> */}
+                <Typography variant="body2">Total Prescriptions</Typography>
+              </CardContent>
+            </Grid>
+          </Grid>
+        </div>
+
+        <div className="container">
           <div align="right">
             <SearchIcon />
-            <input
-              id="search-input"
-              type="text"
-              onChange={this.filterPrescriptionList}
-              placeholder="Enter patient here"
-            />
-          </div>
-
-          <input type="checkbox" className="checkbox" value="Being Prepared" onClick={() => this.filterByPrescriptionStatus("Being Prepared")} />
-
-          <div className="container">
-            <button className="btn btn-primary" onClick={this.goToPrescriptionClicked}>
-              ADD new prescription
-          </button>
-          </div>
-          <div className="row">
-            {this.state.prescriptionsOnDisplay.map(prescription => (
-
-              <div className="col-md-3 col-sm-6 mt-5">
-                <div className="card text-white">
-                  <div onClick={() => this.props.history.push(`/prescriptions/${prescription.prescriptionID}`)} className={prescription.status == "Being Prepared" ? "card border-info" : (prescription.status == "Fulfilled" ? "card border-success" : (prescription.status == "Ready" ? "card border-primary" : "card border-warning"))} >
-                    <div className={prescription.status == "Being Prepared" ? "card-header bg-info text-white" : (prescription.status == "Fulfilled" ? "card-header bg-success text-white" : (prescription.status == "Ready" ? "card-header bg-primary text-white" : "card-header bg-warning text-white"))}>{prescription.status}</div>
-                    <img className="card-img-top" src="sample-question-mark.png" alt="Card image" />
-                    <div className={prescription.status == "Being Prepared" ? "card-body bg-info" : (prescription.status == "Fulfilled" ? "card-body bg-success" : (prescription.status == "Ready" ? "card-body bg-primary" : "card-body bg-warning"))}>
-                      <h4 class="card-title">{prescription.patientOnPrescription.patientFirstName + ' ' + prescription.patientOnPrescription.patientSurname}</h4>
-                      <p class="card-text">{prescription.status.toLowerCase() == "fulfilled" ? 'Fulfilled Date here' : '(Probably creation date)'}</p>
-                    </div>
-                    {/* <div className="card-footer">Footer</div> */}
-                  </div>
-                </div>
-              </div>
-            ))}
-
+            <input id="search-input" type="text" onChange={this.filterPrescriptionList} placeholder="Enter prescription here" />
           </div>
         </div>
 
-        <pre>{JSON.stringify(this.state, null, 2)}</pre>
-      </>
+        <div className="row mt-5">
+          {this.state.prescriptionsOnDisplay.map(prescription => (
+
+            <div className="col-md-3 col-sm-6 mt-5" key={prescription.prescriptionID}>
+              <div className="card text-white">
+                <div onClick={() => this.props.history.push(`/prescriptions/${prescription.prescriptionID}`)} className={prescription.prescriptionStatus.toLowerCase == "ready" ? "card border border-primary" : prescription.status == "Being Prepared" ? "card border-info" : (prescription.status == "Fulfilled" ? "card border-success" : (prescription.status == "Ready" ? "card border-primary" : "card border-warning"))} >
+                  <div className={prescription.prescriptionStatus == "Being Prepared" ? "card-header bg-info text-white" : (prescription.prescriptionStatus == "Fulfilled" ? "card-header bg-success text-white" : (prescription.prescriptionStatus == "Ready" ? "card-header bg-primary text-white" : "card-header bg-warning text-white"))}>{prescription.prescriptionStatus}</div>
+                  <img className="card-img-top" src={prescription.prescriptionImageURI || "/images/sample-question-mark.png"} alt="Card image" />
+                  <div className={prescription.prescriptionStatus.toLowerCase() == "submitted" ? "card-body bg-warning" : prescription.prescriptionStatus.toLowerCase() == "being prepared" ? "card-body bg-info" : (prescription.prescriptionStatus.toLowerCase() == "fulfilled" ? "card-body bg-secondary" : (prescription.prescriptionStatus.toLowerCase() == "ready" ? "card-body bg-primary" : "card-body bg-warning"))}>
+                    <h4 className="card-title">{prescription.patientFirstName + ' ' + prescription.patientLastName}</h4>
+                    <p className="card-text">{prescription.prescriptionLineItems.length} Line Items</p>
+                    {/* <p className="card-text">{prescription.prescriptionStatus.toLowerCase() == "fulfilled" ? 'Fulfilled Date here' : '(Probably creation date)'}</p> */}
+                    <p className="card-text">Created {this.dateFormated(prescription.prescriptionCreationDate)} </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+
+        </div>
+
+        {/* Material ui checkbox */}
+        <div className="container">
+          <input type="checkbox" className="checkbox" value="Being Prepared" onClick={() => this.filterByPrescriptionStatus("Being Prepared")} />
+        </div>
+
+      </div>
     );
+  }
+
+
+  dateFormated = (longMillis) => {
+
+    let date = new Date(longMillis);
+    return date.getDate().toString();
   }
 }

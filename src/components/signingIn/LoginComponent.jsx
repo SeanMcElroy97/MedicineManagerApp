@@ -73,7 +73,7 @@ export default class LoginComponent extends Component {
 
       //console.log(this.props.history);
       // this.props.history.push(`/home/${this.state.pharmEmail}`);
-      this.props.history.push('/pharmacy')
+      this.props.history.push('/home')
 
     }
 
@@ -87,7 +87,7 @@ export default class LoginComponent extends Component {
         this.state.pharmPassword
       );
 
-      this.props.history.push('/pharmacy')
+      this.props.history.push('/home')
 
     }
 

@@ -8,10 +8,10 @@ class HeaderComponent extends Component {
     //console.log(userLoggedIn);
 
     return (
-      <header>
+      <header className="header-component">
         <nav className="navbar navbar-expand-md navbar-dark bg-success">
           <div className="navbar-brand">My Medicine Manager</div>
-          <ul className="navbar-nav navbar-collapse justify-content-end">
+          <ul className="navbar-nav navbar-collapse justify-content-end .navbar-fixed-top">
             {userLoggedIn && (
               <Link to="/home">
                 <li className="nav-link">Home</li>
@@ -24,7 +24,7 @@ class HeaderComponent extends Component {
                   className="nav-link"
                 // onClick={() => this.props.history.push("/adminmedicinefile")}
                 >
-                  Notifications
+                  Admin
                 </li>
               </Link>
             )}

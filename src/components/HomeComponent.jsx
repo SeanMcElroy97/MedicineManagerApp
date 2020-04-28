@@ -27,7 +27,7 @@ export default class HomeComponent extends Component {
                 <div className="card-body text-center">
                   {this.state.productFileHover == false ? <img src='/images/drug.png' height="100" /> : <img src='/images/drug.png' height="120" />}
                   <h4 className={"card-title menu-card-t"}>Medicine</h4>
-                  <p className={"card-text menu-card-p"}>View medicine data.</p>
+                  <p className={"card-text menu-card-p"}>Manage Medicine Stock.</p>
                 </div>
               </div>
             </div>
