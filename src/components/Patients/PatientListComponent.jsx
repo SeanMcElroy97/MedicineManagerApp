@@ -1,6 +1,8 @@
 import React, { Component } from "../../../node_modules/react";
 import PatientService from "../../api/PatientService";
 import SearchIcon from "../../../node_modules/@material-ui/icons/Search";
+import { Card, CardContent, Typography, Grid } from '@material-ui/core';
+import CountUp from 'react-countup';
 
 
 export default class patientListComponent extends Component {
@@ -12,6 +14,7 @@ export default class patientListComponent extends Component {
     };
     this.getMyPatients = this.getMyPatients.bind(this);
     this.filterPatientList = this.filterPatientList.bind(this);
+
 
   }
 
@@ -29,30 +32,27 @@ export default class patientListComponent extends Component {
       .catch(() => alert('Couldnt retrieve your patients'))
   }
 
-  filterPatientList(event) {
-    let typedString = event.target.value.trim();
-
-    //Doesnt work for backspace
-
-    let filteredArray = this.state.allPatients.filter(value =>
-      value.patientFirstName.toUpperCase().includes(typedString.toUpperCase())
-    );
-
-    console.log(typedString);
-    console.log(filteredArray);
-
-    if (typedString.length == 0) {
-      this.setState({ patients: this.state.allPatients });
-    } else {
-      this.setState({ patients: filteredArray });
-    }
-  }
 
 
   render() {
     return (
       <div className="container">
         <h1>Patients</h1>
+
+        <div className="container">
+          <Grid container spacing={3} justify="center" >
+            <Grid item component={Card} xs={12} md={3} className={"covid-card-recovered"}>
+              <CardContent>
+                <Typography color="textSecondary" gutterBottom>Patients</Typography>
+                <Typography variant="h5">
+                  <CountUp start={0} end={this.state.allPatients.length} duration={2.5} separator="," />
+                </Typography>
+                <Typography variant="body2">Your total patients </Typography>
+              </CardContent>
+            </Grid>
+          </Grid>
+        </div>
+
         <div align="right">
           <SearchIcon />
           <input
@@ -63,11 +63,10 @@ export default class patientListComponent extends Component {
           />
         </div>
         <div className="container">
-          {this.state.displayedPatients.length < 1 && (
-            <>
-              <h1>You have no patients</h1>
-              <button className="btn btn-success">Add New patient</button>
-            </>
+          {this.state.allPatients.length < 1 && (
+
+            <h1>You have no patients</h1>
+
           )}
           {this.state.displayedPatients.length >= 1 && (
             <div className="container">
@@ -100,4 +99,22 @@ export default class patientListComponent extends Component {
       </div>
     );
   }
+  filterPatientList(event) {
+    let typedString = event.target.value.trim();
+    // console.log(typedString);
+    // console.log(this.state.allStock);
+
+    let filteredArray = this.state.allPatients.filter(value =>
+      value.lastName.toLowerCase().includes(typedString.toLowerCase())
+    );
+
+    // console.log(filteredArray);
+
+    if (typedString.length < 1) {
+      this.setState({ displayedPatients: this.state.allPatients });
+    } else {
+      this.setState({ displayedPatients: filteredArray });
+    }
+  }
+
 }

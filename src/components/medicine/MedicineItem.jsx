@@ -7,11 +7,13 @@ export default class MedicineItem extends Component {
     super(props);
     this.state = {
       medicineBarcode: this.props.match.params.barcode,
-      medicineItem: {}
+      medicineItem: {},
+      isDisabledEditing: true
     };
   }
   render() {
-    let isDisabledEditing = true;
+
+    let isDisabledEditing = true
     return (
       <div className="container">
 

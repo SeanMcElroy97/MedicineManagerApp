@@ -15,7 +15,10 @@ export default class prescriptionListComponent extends Component {
       beingPreparedChecked: false
     };
 
-    this.filterPrescriptionList = this.filterPrescriptionList.bind(this);
+    // this.filterPrescriptionList = this.filterPrescriptionList.bind(this);
+    this.getCardHeaderColor = this.getCardHeaderColor.bind(this);
+    this.getCardBodyColor = this.getCardBodyColor.bind(this);
+    this.getCardBorderColor = this.getCardBorderColor.bind(this)
   }
 
   componentDidMount() {
@@ -27,19 +30,53 @@ export default class prescriptionListComponent extends Component {
 
   }
 
-  filterPrescriptionList(event) {
-    let typedString = event.target.value.trim();
 
-    let filteredByName = this.state.prescriptions.filter(value =>
-      value.patientOnPrescription.patientFirstName.toLowerCase().includes(typedString.toLowerCase())
-      ||
-      value.patientOnPrescription.patientSurname.toLowerCase().includes(typedString.toLowerCase())
-    );
 
-    if (typedString.length == 0) {
-      this.setState({ prescriptionsOnDisplay: this.state.prescriptions });
-    } else {
-      this.setState({ prescriptionsOnDisplay: filteredByName });
+  getCardHeaderColor(status) {
+    switch (status.toLowerCase()) {
+      case 'fulfilled':
+        return 'card-header bg-secondary text-white'
+      case 'ready':
+        return 'card-header bg-success text-white'
+      case 'submitted':
+        return 'card-header bg-warning text-dark'
+      case 'cancelled':
+        return 'card-header bg-danger text-white'
+      default:
+        return 'card-header bg-primary text-white'
+      // code block
+    }
+  }
+
+  getCardBodyColor(status) {
+    switch (status.toLowerCase()) {
+      case 'fulfilled':
+        return 'card-body bg-secondary text-white'
+      case 'ready':
+        return 'card-body bg-success text-white'
+      case 'submitted':
+        return 'card-body bg-warning text-dark'
+      case 'cancelled':
+        return 'card-body bg-danger text-white'
+      default:
+        return 'card-body bg-primary text-white'
+      // code block
+    }
+  }
+
+  getCardBorderColor(status) {
+    switch (status.toLowerCase()) {
+      case 'fulfilled':
+        return 'card border border-secondary'
+      case 'ready':
+        return 'card border border-success'
+      case 'submitted':
+        return 'card border border-warning'
+      case 'cancelled':
+        return 'card border border-danger'
+      default:
+        return 'card border border-primary'
+      // code block
     }
   }
 
@@ -49,7 +86,7 @@ export default class prescriptionListComponent extends Component {
 
       <div className="container">
         <h1>Prescriptions</h1>
-
+        {/* Material ui checkbox */}
 
         <div className="container">
           <Grid container spacing={3} justify="center" >
@@ -59,11 +96,11 @@ export default class prescriptionListComponent extends Component {
                 <Typography variant="h5">
                   <CountUp start={0} end={this.state.prescriptions.length} duration={2.5} separator="," />
                 </Typography>
-                {/* <Typography color="textSecondary">{this.state.todaysDate.toDateString()} 02:00 AM</Typography> */}
                 <Typography variant="body2">Total Prescriptions</Typography>
               </CardContent>
             </Grid>
           </Grid>
+
         </div>
 
         <div className="container">
@@ -73,15 +110,20 @@ export default class prescriptionListComponent extends Component {
           </div>
         </div>
 
-        <div className="row mt-5">
+
+
+
+        <div className="row mt-3">
           {this.state.prescriptionsOnDisplay.map(prescription => (
 
             <div className="col-md-3 col-sm-6 mt-5" key={prescription.prescriptionID}>
               <div className="card text-white">
-                <div onClick={() => this.props.history.push(`/prescriptions/${prescription.prescriptionID}`)} className={prescription.prescriptionStatus.toLowerCase == "ready" ? "card border border-primary" : prescription.status == "Being Prepared" ? "card border-info" : (prescription.status == "Fulfilled" ? "card border-success" : (prescription.status == "Ready" ? "card border-primary" : "card border-warning"))} >
-                  <div className={prescription.prescriptionStatus == "Being Prepared" ? "card-header bg-info text-white" : (prescription.prescriptionStatus == "Fulfilled" ? "card-header bg-success text-white" : (prescription.prescriptionStatus == "Ready" ? "card-header bg-primary text-white" : "card-header bg-warning text-white"))}>{prescription.prescriptionStatus}</div>
+                <div onClick={() => this.props.history.push(`/prescriptions/${prescription.prescriptionID}`)} className={this.getCardBorderColor(prescription.prescriptionStatus)}>
+
+                  <div className={this.getCardHeaderColor(prescription.prescriptionStatus)}>{prescription.prescriptionStatus}</div>
                   <img className="card-img-top" src={prescription.prescriptionImageURI || "/images/sample-question-mark.png"} alt="Card image" />
-                  <div className={prescription.prescriptionStatus.toLowerCase() == "submitted" ? "card-body bg-warning" : prescription.prescriptionStatus.toLowerCase() == "being prepared" ? "card-body bg-info" : (prescription.prescriptionStatus.toLowerCase() == "fulfilled" ? "card-body bg-secondary" : (prescription.prescriptionStatus.toLowerCase() == "ready" ? "card-body bg-primary" : "card-body bg-warning"))}>
+                  <div className={this.getCardBodyColor(prescription.prescriptionStatus.toLowerCase())}>
+
                     <h4 className="card-title">{prescription.patientFirstName + ' ' + prescription.patientLastName}</h4>
                     <p className="card-text">{prescription.prescriptionLineItems.length} Line Items</p>
                     {/* <p className="card-text">{prescription.prescriptionStatus.toLowerCase() == "fulfilled" ? 'Fulfilled Date here' : '(Probably creation date)'}</p> */}
@@ -93,12 +135,6 @@ export default class prescriptionListComponent extends Component {
           ))}
 
         </div>
-
-        {/* Material ui checkbox */}
-        <div className="container">
-          <input type="checkbox" className="checkbox" value="Being Prepared" onClick={() => this.filterByPrescriptionStatus("Being Prepared")} />
-        </div>
-
       </div>
     );
   }
