@@ -19,6 +19,14 @@ class MedicineService {
   }
 
 
+  pharmacyUpdateStockItemList(stockItemList) {
+    console.log(stockItemList)
+    return Axios.post(URL + "/pharmacy/updateMedicineStock", stockItemList);
+  }
+
+
+
+
 
 
 

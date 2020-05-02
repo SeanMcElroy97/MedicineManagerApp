@@ -8,7 +8,8 @@ export default class MedicineItem extends Component {
     this.state = {
       medicineBarcode: this.props.match.params.barcode,
       medicineItem: {},
-      isDisabledEditing: true
+      isDisabledEditing: true,
+      stockItem: {}
     };
   }
   render() {
@@ -26,7 +27,7 @@ export default class MedicineItem extends Component {
 
         <fieldset className="form-group mt-3">
           <label>Ingredient List 1</label>
-          <input style={{ color: "purple" }} className="form-control" type="text" name="mainIngredientOne" placeholder="(Ingredient List One)" disabled={isDisabledEditing} />
+          <input style={{ color: "purple" }} className="form-control" type="text" name="mainIngredientOne" placeholder="(Ingredient List One)" value="ascorbic acid 1000mg" disabled={isDisabledEditing} />
         </fieldset>
 
 
@@ -34,7 +35,7 @@ export default class MedicineItem extends Component {
           <div className="col">
             <fieldset className="form-group">
               <label>Barcode</label>
-              <input style={{ color: "purple" }} className="form-control" type="text" name="reimbursementPrice" placeholder="(Barcode)" disabled={isDisabledEditing} />
+              <input style={{ color: "purple" }} className="form-control" type="text" name="reimbursementPrice" placeholder="(Barcode)" value="50-12335-106505" disabled={isDisabledEditing} />
             </fieldset>
           </div>
 
@@ -54,14 +55,14 @@ export default class MedicineItem extends Component {
           <div className="col">
             <fieldset className="form-group">
               <label>IPU Category</label>
-              <input style={{ color: "purple" }} className="form-control" type="text" name="packSize" placeholder="(Package Size here)" disabled={isDisabledEditing} />
+              <input style={{ color: "purple" }} className="form-control" type="text" name="packSize" placeholder="(Package Size here)" value={1} disabled={isDisabledEditing} />
             </fieldset>
           </div>
 
           <div className="col">
             <fieldset className="form-group">
               <label>Manufacture</label>
-              <input style={{ color: "purple" }} className="form-control" type="text" name="manufacturer" placeholder="(Manufacturer here)" disabled={isDisabledEditing} />
+              <input style={{ color: "purple" }} className="form-control" type="text" name="manufacturer" placeholder="(Manufacturer here)" value="S SEAS" disabled={isDisabledEditing} />
             </fieldset>
           </div>
         </div>
@@ -71,14 +72,14 @@ export default class MedicineItem extends Component {
           <div className="col">
             <fieldset className="form-group">
               <label>GMS number</label>
-              <input style={{ color: "purple" }} className="form-control" type="text" name="genericName" placeholder="GMS number" disabled={isDisabledEditing} />
+              <input style={{ color: "purple" }} className="form-control" type="text" name="genericName" placeholder="GMS number" value="#" disabled={isDisabledEditing} />
             </fieldset>
           </div>
 
           <div className="col">
             <fieldset className="form-group">
               <label>Posison Classification</label>
-              <input style={{ color: "purple" }} className="form-control" type="text" name="poisonClassification" placeholder="(poison classification)" disabled={isDisabledEditing} />
+              <input style={{ color: "purple" }} className="form-control" type="text" name="poisonClassification" placeholder="(poison classification)" value="#" disabled={isDisabledEditing} />
             </fieldset>
           </div>
         </div>
@@ -86,21 +87,21 @@ export default class MedicineItem extends Component {
 
         <fieldset className="form-group mt-3">
           <label>Generic Name</label>
-          <input style={{ color: "purple" }} className="form-control" type="text" name="genericName" placeholder="(generic name)" disabled={isDisabledEditing} />
+          <input style={{ color: "purple" }} className="form-control" type="text" name="genericName" placeholder="(generic name)" value="ASCORBIC ACID" disabled={isDisabledEditing} />
         </fieldset>
 
         <div className="row mt-3">
           <div className="col">
             <fieldset className="form-group">
               <label>Pack Size</label>
-              <input style={{ color: "purple" }} className="form-control" type="text" name="warningCodesForLabels" placeholder="(pack size)" disabled={isDisabledEditing} />
+              <input style={{ color: "purple" }} className="form-control" type="text" name="warningCodesForLabels" placeholder="(pack size)" value={20} disabled={isDisabledEditing} />
             </fieldset>
           </div>
 
           <div className="col">
             <fieldset className="form-group">
               <label>Trade Price</label>
-              <input style={{ color: "purple" }} className="form-control" type="text" name="warningCodesForLabels" placeholder="Trade Price" disabled={isDisabledEditing} />
+              <input style={{ color: "purple" }} className="form-control" type="text" name="warningCodesForLabels" placeholder="Trade Price" value={317} disabled={isDisabledEditing} />
             </fieldset>
           </div>
         </div>

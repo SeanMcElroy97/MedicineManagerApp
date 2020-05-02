@@ -20,7 +20,7 @@ export default class LoginComponent extends Component {
 
   render() {
     return (
-      <div className=" container bg-primary text-white">
+      <div className=" container">
         <h1>Login</h1>
         <Formik
           initialValues={{

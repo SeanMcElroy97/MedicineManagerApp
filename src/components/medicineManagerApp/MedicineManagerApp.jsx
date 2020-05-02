@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 
-import { StickyContainer, Sticky } from 'react-sticky';
-
 import HeaderComponent from "../HeaderComponent.jsx";
 
 import LandingPageComponent from "../signingIn/LandingPageComponent.jsx";

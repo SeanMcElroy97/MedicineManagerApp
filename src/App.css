@@ -39,6 +39,16 @@
   border-bottom: 10px solid rgba(255,0,0,0.5);
 }
 
+.prescription-card-submitted{
+  margin: 0 2% !important;
+  border-bottom: 10px solid rgb(240, 173, 78);
+}
+
+.prescription-card-fulfilled{
+  margin: 0 2% !important;
+  border-bottom: 10px solid rgb(163, 163, 163);
+}
+
 .covid-card-recovered{
   margin: 0 2% !important;
   border-bottom: 10px solid rgba(0,255,0,0.5);

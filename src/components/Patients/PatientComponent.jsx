@@ -21,11 +21,15 @@ export default class PatientComponent extends Component {
 
     this.getPrescriptionsCancelled = this.getPrescriptionsCancelled.bind(this)
     this.getPrescriptionsFulfilled = this.getPrescriptionsFulfilled.bind(this)
+    this.getCardHeaderColor = this.getCardHeaderColor.bind(this)
+    this.getCardBodyColor = this.getCardBodyColor.bind(this)
+    this.getCardBorderColor = this.getCardBorderColor.bind(this)
   }
 
   componentDidMount() {
 
-    PatientService.fetchPatientById(this.state.patientID)
+    // PatientService.fetchPatientById(this.state.patientID)
+    //   .then(response => console.log(response))
 
 
     PatientService.fetchPatientPrescriptions(this.state.patientID)
@@ -74,7 +78,8 @@ export default class PatientComponent extends Component {
     return (
       <div className="container">
         <div className="container">
-          Patient Component. id of this patient is {this.props.match.params.patientID}
+          <h3>{this.state.patient.firstName}Patient: John Cena   phone Number: +(353) 8252399</h3>
+          {/* <pre>{JSON.stringify(this.state.patient)}</pre> */}
         </div>
         <div className="row">
           <Grid container spacing={3} justify="center" >
@@ -117,12 +122,12 @@ export default class PatientComponent extends Component {
 
             <div className="col-md-3 col-sm-6 mt-5" key={prescription.prescriptionID}>
               <div className="card text-white">
-                <div onClick={() => this.props.history.push(`/prescriptions/${prescription.prescriptionID}`)} className={prescription.prescriptionStatus.toLowerCase == "ready" ? "card border border-primary" : prescription.status == "Being Prepared" ? "card border-info" : (prescription.status == "Fulfilled" ? "card border-success" : (prescription.status == "Ready" ? "card border-primary" : "card border-warning"))} >
-                  <div className={prescription.prescriptionStatus == "Being Prepared" ? "card-header bg-info text-white" : (prescription.prescriptionStatus == "Fulfilled" ? "card-header bg-success text-white" : (prescription.prescriptionStatus == "Ready" ? "card-header bg-primary text-white" : "card-header bg-warning text-white"))}>{prescription.prescriptionStatus}</div>
+                <div onClick={() => this.props.history.push(`/prescriptions/${prescription.prescriptionID}`)} className={this.getCardBorderColor(prescription.prescriptionStatus.toLowerCase())}>
+                  <div className={this.getCardHeaderColor(prescription.prescriptionStatus.toLowerCase())}>{prescription.prescriptionStatus}</div>
                   <img className="card-img-top" src={prescription.prescriptionImageURI || "/images/sample-question-mark.png"} alt="Card image" />
-                  <div className={prescription.prescriptionStatus.toLowerCase() == "submitted" ? "card-body bg-warning" : prescription.prescriptionStatus.toLowerCase() == "being prepared" ? "card-body bg-info" : (prescription.prescriptionStatus.toLowerCase() == "fulfilled" ? "card-body bg-secondary" : (prescription.prescriptionStatus.toLowerCase() == "ready" ? "card-body bg-primary" : "card-body bg-warning"))}>
+                  <div className={this.getCardBodyColor(prescription.prescriptionStatus.toLowerCase())}>
                     {/* <p className="card-text">{prescription.prescriptionLineItems.length} Line Items</p> */}
-                    <p className="card-text">{prescription.prescriptionStatus.toLowerCase() == "fulfilled" ? 'Fulfilled ' + format(new Date(prescription.prescriptionFulfilmentDate), 'hh:mm, MM/dd/yyyy') : 'Created ' + format(new Date(prescription.prescriptionCreationDate), 'hh:mm, MM/dd/yyyy')}</p>
+                    <p className="card-text">{prescription.prescriptionStatus.toLowerCase() == "fulfilled" ? 'Fulfilled ' + format(new Date(prescription.prescriptionFulfilmentDate), 'hh:mm, dd/MM/yyyy') : 'Created ' + format(new Date(prescription.prescriptionCreationDate), 'hh:mm, dd/MM/yyyy')}</p>
                   </div>
                 </div>
               </div>
@@ -134,6 +139,56 @@ export default class PatientComponent extends Component {
       </div>
     );
   }
+
+
+  getCardHeaderColor(status) {
+    switch (status.toLowerCase()) {
+      case 'fulfilled':
+        return 'card-header bg-secondary text-white'
+      case 'ready':
+        return 'card-header bg-success text-white'
+      case 'submitted':
+        return 'card-header bg-warning text-dark'
+      case 'cancelled':
+        return 'card-header bg-danger text-white'
+      default:
+        return 'card-header bg-primary text-white'
+      // code block
+    }
+  }
+
+  getCardBodyColor(status) {
+    switch (status.toLowerCase()) {
+      case 'fulfilled':
+        return 'card-body bg-secondary text-white'
+      case 'ready':
+        return 'card-body bg-success text-white'
+      case 'submitted':
+        return 'card-body bg-warning text-dark'
+      case 'cancelled':
+        return 'card-body bg-danger text-white'
+      default:
+        return 'card-body bg-primary text-white'
+      // code block
+    }
+  }
+
+  getCardBorderColor(status) {
+    switch (status.toLowerCase()) {
+      case 'fulfilled':
+        return 'card border border-secondary'
+      case 'ready':
+        return 'card border border-success'
+      case 'submitted':
+        return 'card border border-warning'
+      case 'cancelled':
+        return 'card border border-danger'
+      default:
+        return 'card border border-primary'
+      // code block
+    }
+  }
+
 }
 
 

@@ -18,9 +18,16 @@ export default class PrescriptionComponent extends React.Component {
         }
         this.fetchLineItems = this.fetchLineItems.bind(this)
         this.fetchAllAvailableMedicine = this.fetchAllAvailableMedicine.bind(this)
-        this.handleChange = this.handleChange.bind(this)
+
         this.handleLineItemChange = this.handleLineItemChange.bind(this)
         this.addPrescriptionLineItem = this.addPrescriptionLineItem.bind(this)
+
+        this.handleStatusChange = this.handleStatusChange.bind(this)
+        this.handleDoctorChange = this.handleDoctorChange.bind(this)
+
+        this.isEditingAllowed = true
+
+        this.updatePrescriptionBtnHit = this.updatePrescriptionBtnHit.bind(this)
     }
 
     componentDidMount() {
@@ -30,7 +37,9 @@ export default class PrescriptionComponent extends React.Component {
                 this.setState({ prescription: response.data })
 
                 this.fetchLineItems()
-            })
+            }).then(
+                PrescriptionService.fetchisPrescriptionEditable(this.props.match.params.prescriptionID).then(response => console.log('is editable ' + response.data))
+            )
     }
 
     fetchLineItems() {
@@ -52,12 +61,6 @@ export default class PrescriptionComponent extends React.Component {
         //     })
     }
 
-
-    handleChange(event) {
-        console.log(event.target.value)
-        this.setState({ value: event.target.value });
-    }
-
     handleLineItemChange(event) {
         console.log(event.target.value)
         // this.setState({ value: event.target.value });
@@ -71,40 +74,48 @@ export default class PrescriptionComponent extends React.Component {
 
 
         return <div className="container">
+
             <div className="row">
+
+
                 <div className="col-8">
 
-                    <div className="row mt-3">
-                        <fieldset className="col">
+                    <fieldset className="form-group mt-5">
+                        <label>Dispensing Pharmacy</label>
+                        <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Dispensing pharmacy" value={this.state.prescription.pharmacyName || ''} disabled={true} />
+                    </fieldset>
+
+                    <div className="row mt-5">
+                        <fieldset className="col" onClick={() => this.props.history.push(`/patients/${this.state.prescription.prescriptionPatient}`)}>
                             <label>Patient First Name</label>
-                            <input style={{ color: "purple", fontWeight: "normal" }} className="form-control" type="text" placeholder="Patient First Name here" value={this.state.prescription.patientFirstName || ''} onChange={this.handleChange} disabled={true} />
+                            <input style={{ color: "purple", fontWeight: "normal" }} className="form-control" type="text" placeholder="Patient First Name here" value={this.state.prescription.patientFirstName || ''} disabled={true} />
                         </fieldset>
 
-                        <fieldset className="col">
+                        <fieldset className="col" onClick={() => this.props.history.push(`/patients/${this.state.prescription.prescriptionPatient}`)}>
                             <label>Patient Last Name</label>
-                            <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Patient Last Name here" value={this.state.prescription.patientLastName || ''} onChange={this.handleChange} disabled={true} />
+                            <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Patient Last Name here" value={this.state.prescription.patientLastName || ''} disabled={true} />
                         </fieldset>
                     </div>
 
                     <fieldset className="form-group mt-5">
                         <label>Prescription Creation Date</label>
-                        <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Creation Date" value={moment(new Date(this.state.prescription.prescriptionCreationDate)).format('hh:mm,  MMMM Do YYYY') || ''} onChange={this.handleChange} disabled={true} />
+                        <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Creation Date" value={moment(new Date(this.state.prescription.prescriptionCreationDate)).format('hh:mm,  MMMM Do YYYY') || ''} disabled={true} />
                     </fieldset>
 
 
                     {this.state.prescription.prescriptionFulfilmentDate > 0 && <fieldset className="form-group mt-5">
                         <label>Prescription Fulfillment Date</label>
-                        <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Creation Date" value={moment(new Date(this.state.prescription.prescriptionFulfilmentDate)).format('hh:mm,  MMMM Do YYYY') || ''} onChange={this.handleChange} disabled={true} />
+                        <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Creation Date" value={moment(new Date(this.state.prescription.prescriptionFulfilmentDate)).format('hh:mm,  MMMM Do YYYY') || ''} disabled={true} />
                     </fieldset>}
 
                     <fieldset className="form-group mt-5">
                         <label>Patient Message to pharmacy</label>
-                        <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Patient Message To Pharmacy" value={this.state.prescription.patientMessage || ''} onChange={this.handleChange} disabled={true} />
+                        <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Patient Message To Pharmacy" value={this.state.prescription.patientMessage || ''} disabled={true} />
                     </fieldset>
 
                     <fieldset className="form-group mt-5">
                         <label>Doctor/prescriber</label>
-                        <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Doctor" value={this.state.prescription.doctor || ''} onChange={this.handleChange} disabled={isDisabledEditing} />
+                        <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Doctor" value={this.state.prescription.doctor || ''} onChange={this.handleDoctorChange} disabled={isDisabledEditing} />
                     </fieldset>
 
 
@@ -137,10 +148,24 @@ export default class PrescriptionComponent extends React.Component {
                         </div>
                     ))}
 
-                    <button className="btn-primary" onClick={() => this.state.prescriptionLineItems.push('')}>Add a line Item</button>
+                    <button className="btn btn-primary" onClick={() => this.state.prescriptionLineItems.push('')}>Add a line Item</button>
+
+                    {/* Status   */}
+                    <fieldset className="form-group mt-3">
+                        <label>Prescription Status</label>
+                        <select value={this.state.prescription.prescriptionStatus} className="form-control" onChange={this.handleStatusChange}>
+                            <option style={{ color: "GoldenRod" }} value="submitted">Submitted</option>
+                            <option style={{ color: "blue" }} value="being prepared">Being Prepared</option>
+                            <option style={{ color: "green" }} value="ready">Ready for pickup</option>
+                            <option style={{ color: "red" }} value="cancelled">Cancel</option>
+                            <option value="fulfilled">Fulfilled</option>
+                        </select>
+                    </fieldset>
+
+                    <button className="btn btn-success" onClick={this.updatePrescriptionBtnHit}>Update Prescription</button>
 
 
-                    <pre>{JSON.stringify(this.state, null, 2)}</pre>
+                    {/* <pre>{JSON.stringify(this.state, null, 2)}</pre> */}
                 </div>
 
                 <div className="col-4">
@@ -152,7 +177,47 @@ export default class PrescriptionComponent extends React.Component {
 
     }
 
+    handleDoctorChange(event) {
+        console.log(event.target.value)
+        let doctor = event.target.value
+
+        //Object.assign({}, prescription)
+        this.setState(prevState => {
+            let prescription = Object.assign({}, prevState.prescription);  // creating copy of state variable jasper
+            prescription.doctor = doctor;                     // update the name property, assign a new value                 
+            return { prescription };                                 // return new object jasper object
+        })
+    }
+
+    handleStatusChange(event) {
+        // console.log(event.target.value)
+        let status = event.target.value
+
+        //Object.assign({}, prescription)
+        this.setState(prevState => {
+            let prescription = Object.assign({}, prevState.prescription);  // creating copy of state variable jasper
+            prescription.prescriptionStatus = status;                     // update the name property, assign a new value                 
+            return { prescription };                                 // return new object jasper object
+        })
+    }
+
     addPrescriptionLineItem() {
         let updatedPrescriptionLineItemArray;
+    }
+
+    updatePrescriptionBtnHit() {
+        //alert('update prescription method')
+        let prescriptionObjToPost = {}
+        prescriptionObjToPost.prescriptionID = this.state.prescription.prescriptionID
+        prescriptionObjToPost.doctor = this.state.prescription.doctor || ''
+        prescriptionObjToPost.prescriptionStatus = this.state.prescription.prescriptionStatus
+
+        prescriptionObjToPost.prescriptionFulfilmentDate = this.state.prescriptionFulfilmentDate || 0
+
+
+        PrescriptionService.updatePrescriptionWithoutLineItems(prescriptionObjToPost)
+            .then(response => console.log(response))
+
+        console.log(prescriptionObjToPost)
     }
 }  

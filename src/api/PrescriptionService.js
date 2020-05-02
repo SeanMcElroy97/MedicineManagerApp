@@ -17,8 +17,8 @@ class PrescriptionService {
   }
 
   //Retrieves 
-  fetchisPrescriptionEditable() {
-    return true;
+  fetchisPrescriptionEditable(prescriptionID) {
+    return Axios.get(URL + `/pharmacy/prescriptioneditable/${prescriptionID}`)
   }
 
 
@@ -26,11 +26,12 @@ class PrescriptionService {
     return Axios.get(URL + `/pharmacy/getAvailableMedicine`);
   }
 
+  //Step 2
+  updatePrescriptionWithoutLineItems(updatedPrescription) {
+    return Axios.post(URL + `/pharmacy/updatePrescription`, updatedPrescription)
+  }
 
-  // updatePrescriptionWithoutLineItems(Prescription){
-
-  // }
-
+  //Step 1
   // update PrescriptionLineItems(lineItemArr){
 
   // }

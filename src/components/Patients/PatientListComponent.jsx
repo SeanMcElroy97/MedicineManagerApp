@@ -3,6 +3,7 @@ import PatientService from "../../api/PatientService";
 import SearchIcon from "../../../node_modules/@material-ui/icons/Search";
 import { Card, CardContent, Typography, Grid } from '@material-ui/core';
 import CountUp from 'react-countup';
+import { format, compareAsc } from 'date-fns'
 
 
 export default class patientListComponent extends Component {
@@ -87,7 +88,7 @@ export default class patientListComponent extends Component {
                     >
                       <td>{patient.firstName}</td>
                       <td>{patient.lastName}</td>
-                      <td>{patient.dateOfBirth}</td>
+                      <td>{format(new Date(patient.dateOfBirth), 'dd/MM/yyyy')}</td>
                       <td>{patient.patientAddress}</td>
                     </tr>
                   ))}
@@ -101,14 +102,10 @@ export default class patientListComponent extends Component {
   }
   filterPatientList(event) {
     let typedString = event.target.value.trim();
-    // console.log(typedString);
-    // console.log(this.state.allStock);
 
     let filteredArray = this.state.allPatients.filter(value =>
       value.lastName.toLowerCase().includes(typedString.toLowerCase())
     );
-
-    // console.log(filteredArray);
 
     if (typedString.length < 1) {
       this.setState({ displayedPatients: this.state.allPatients });

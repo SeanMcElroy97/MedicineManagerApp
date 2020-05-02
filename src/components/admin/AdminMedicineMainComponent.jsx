@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Dropzone from "react-dropzone";
 import MedicineService from "../../api/MedicineService.js";
+import SearchIcon from "../../../node_modules/@material-ui/icons/Search";
 
 export default class AdminMedicineMainComponent extends Component {
   //this method responds when file has been dropped
@@ -224,8 +225,15 @@ export default class AdminMedicineMainComponent extends Component {
         </div>
         {/* <h1>Table here of current medicine data list</h1> */}
 
+
         <div className="container">
-          <input id="search-input" type="text" onChange={this.filterMedicineList} placeholder="Medicine Trade Name" />
+          <div className="container">
+            <div align="right">
+              <SearchIcon />
+              <input id="search-input" type="text" onChange={this.filterMedicineList} placeholder="Enter Med tradename" />
+            </div>
+          </div>
+
 
           {this.state.medicinesDisplayed
             .length >= 1 && (
@@ -245,7 +253,7 @@ export default class AdminMedicineMainComponent extends Component {
                         className={"tr:hover"}
                         key={medicine.barcode}
                         onClick={() => this.props.history.push(`/medicine/${medicine.barcode}`)}
-                        style={medicine.medicineStatus.toLowerCase.replace(" ", "") == "endoflife" ? { background: "lightgrey" } : {}}
+                        style={medicine.medicineStatus.toLowerCase().replace(" ", "") == "endoflife" ? { background: "lightgrey" } : {}}
                       // onMouseEnter={() => { style = {{ background: "blue" }} }}
                       >
                         <td>{medicine.tradeName}</td>

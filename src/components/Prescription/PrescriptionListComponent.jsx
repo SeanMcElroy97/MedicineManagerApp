@@ -4,6 +4,7 @@ import PrescriptionService from "../../api/PrescriptionService";
 import SearchIcon from "../../../node_modules/@material-ui/icons/Search";
 import { Card, CardContent, Typography, Grid } from '@material-ui/core';
 import CountUp from 'react-countup';
+import { format, compareAsc } from 'date-fns'
 
 
 export default class prescriptionListComponent extends Component {
@@ -12,13 +13,17 @@ export default class prescriptionListComponent extends Component {
     this.state = {
       prescriptions: [],
       prescriptionsOnDisplay: [],
-      beingPreparedChecked: false
+      beingPreparedChecked: false,
+      prescriptionsSubmitted: [],
+      prescriptionsFulfilled: []
     };
 
     // this.filterPrescriptionList = this.filterPrescriptionList.bind(this);
     this.getCardHeaderColor = this.getCardHeaderColor.bind(this);
     this.getCardBodyColor = this.getCardBodyColor.bind(this);
     this.getCardBorderColor = this.getCardBorderColor.bind(this)
+    this.getPrescriptionsSubmitted = this.getPrescriptionsSubmitted.bind(this)
+    this.getPrescriptionsFulfilled = this.getPrescriptionsFulfilled.bind(this)
   }
 
   componentDidMount() {
@@ -26,7 +31,10 @@ export default class prescriptionListComponent extends Component {
     PrescriptionService.fetchAllPrescriptions().then(response => {
       this.setState({ prescriptions: response.data, prescriptionsOnDisplay: response.data })
       console.log(response.data)
-    });
+    }).then(() => {
+      this.getPrescriptionsFulfilled()
+      this.getPrescriptionsSubmitted()
+    })
 
   }
 
@@ -90,6 +98,15 @@ export default class prescriptionListComponent extends Component {
 
         <div className="container">
           <Grid container spacing={3} justify="center" >
+            <Grid item component={Card} xs={12} md={3} className={"prescription-card-submitted"}>
+              <CardContent>
+                <Typography color="textSecondary" gutterBottom>Submitted Rxs</Typography>
+                <Typography variant="h5">
+                  <CountUp start={0} end={this.state.prescriptionsSubmitted.length} duration={2.5} separator="," />
+                </Typography>
+                <Typography variant="body2">Submitted Prescriptions</Typography>
+              </CardContent>
+            </Grid>
             <Grid item component={Card} xs={12} md={3} className={"covid-card-confirmed"}>
               <CardContent>
                 <Typography color="textSecondary" gutterBottom>Your Prescriptions</Typography>
@@ -99,16 +116,26 @@ export default class prescriptionListComponent extends Component {
                 <Typography variant="body2">Total Prescriptions</Typography>
               </CardContent>
             </Grid>
+            <Grid item component={Card} xs={12} md={3} className={"prescription-card-fulfilled"}>
+              <CardContent>
+                <Typography color="textSecondary" gutterBottom>Fulfilled Prescriptions</Typography>
+                <Typography variant="h5">
+                  <CountUp start={0} end={this.state.prescriptionsFulfilled.length} duration={2.5} separator="," />
+                </Typography>
+                <Typography variant="body2">Fulfilled Prescriptions</Typography>
+              </CardContent>
+            </Grid>
+
           </Grid>
 
         </div>
 
-        <div className="container">
+        {/* <div className="container">
           <div align="right">
             <SearchIcon />
             <input id="search-input" type="text" onChange={this.filterPrescriptionList} placeholder="Enter prescription here" />
           </div>
-        </div>
+        </div> */}
 
 
 
@@ -126,8 +153,7 @@ export default class prescriptionListComponent extends Component {
 
                     <h4 className="card-title">{prescription.patientFirstName + ' ' + prescription.patientLastName}</h4>
                     <p className="card-text">{prescription.prescriptionLineItems.length} Line Items</p>
-                    {/* <p className="card-text">{prescription.prescriptionStatus.toLowerCase() == "fulfilled" ? 'Fulfilled Date here' : '(Probably creation date)'}</p> */}
-                    <p className="card-text">Created {this.dateFormated(prescription.prescriptionCreationDate)} </p>
+                    <p className="card-text">{prescription.prescriptionStatus.toLowerCase() == "fulfilled" ? 'Fulfilled ' + format(new Date(prescription.prescriptionFulfilmentDate), 'hh:mm, dd/MM/yyyy') : 'Created ' + format(new Date(prescription.prescriptionCreationDate), 'hh:mm, dd/MM/yyyy')}</p>
                   </div>
                 </div>
               </div>
@@ -139,6 +165,30 @@ export default class prescriptionListComponent extends Component {
     );
   }
 
+  getPrescriptionsSubmitted() {
+    let submittedArr = []
+    for (let i = 0; i < this.state.prescriptions.length; i++) {
+      if (this.state.prescriptions[i].prescriptionStatus.toLowerCase() == 'submitted') {
+        submittedArr.push(this.state.prescriptions[i])
+      }
+    }
+    console.log('submitted length ' + submittedArr.length)
+
+    this.setState({ prescriptionsSubmitted: submittedArr })
+  }
+
+  getPrescriptionsFulfilled() {
+    let fulfilled = []
+    for (let i = 0; i < this.state.prescriptions.length; i++) {
+      if (this.state.prescriptions[i].prescriptionStatus.toLowerCase() == 'fulfilled') {
+        fulfilled.push(this.state.prescriptions[i])
+      }
+    }
+    console.log('fulfilled length ' + fulfilled.length)
+
+
+    this.setState({ prescriptionsFulfilled: fulfilled })
+  }
 
   dateFormated = (longMillis) => {
 

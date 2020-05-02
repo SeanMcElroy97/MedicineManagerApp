@@ -19,7 +19,7 @@ export default class SignUpComponent extends Component {
     }
 
     render() {
-        return (<div className="container bg-dark text-white">
+        return (<div className="container">
             <h1>Sign Up</h1>
 
             <Formik
