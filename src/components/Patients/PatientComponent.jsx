@@ -31,6 +31,10 @@ export default class PatientComponent extends Component {
     // PatientService.fetchPatientById(this.state.patientID)
     //   .then(response => console.log(response))
 
+    PatientService.fetchPatientById(this.state.patientID).then(response => {
+      console.log(response.data)
+      this.setState({ patient: response.data })
+    })
 
     PatientService.fetchPatientPrescriptions(this.state.patientID)
       .then(response => {
@@ -78,8 +82,8 @@ export default class PatientComponent extends Component {
     return (
       <div className="container">
         <div className="container">
-          <h3>{this.state.patient.firstName}Patient: John Cena   phone Number: +(353) 8252399</h3>
-          {/* <pre>{JSON.stringify(this.state.patient)}</pre> */}
+          <h3>Patient:  {this.state.patient.firstName} {this.state.patient.lastName}</h3>
+          <h3>Phone Number: {this.state.patient.phoneNumber}</h3>
         </div>
         <div className="row">
           <Grid container spacing={3} justify="center" >

@@ -37,6 +37,7 @@ export default class MedicineStockList extends Component {
       this.setState({ allStock: response.data, stockDisplayed: response.data, originalAllStock: response.data })
       //console.log(response)
       this.getAllCurrentMedicine(response.data)
+      document.getElementById("search-input").value = "";
     })
       .catch(() => alert('Could not fetch Stock'))
 
@@ -147,22 +148,24 @@ export default class MedicineStockList extends Component {
   handleQtyChange(id, e) {
 
     //console.log('id : ' + id)
-    //console.log('value : ' + e.target.value)
+    // console.log('value : ' + e.target.value)
 
     const stockCopy = Object.assign([], this.state.allStock)
-
+    const displayedStockCopy = Object.assign([], this.state.stockDisplayed)
     // const index = this.state.stockDisplayed.findIndex((item) => {
     //   return item.itemStockLevelID === id
     // });
 
-    const index = stockCopy.findIndex(stockItemX => stockItemX.itemStockLevelID === id)
+    //const index = stockCopy.findIndex(stockItemX => stockItemX.itemStockLevelID === id)
 
+    const index = displayedStockCopy.findIndex(stockItemX => stockItemX.itemStockLevelID === id)
 
     // for(let i =0; i<)
     ////console.log('index ' + index)
     const stockItem = Object.assign({}, this.state.stockDisplayed[index])
     stockItem.quantity = parseInt(e.target.value) || 0
 
+    //console.log(stockItem.quantity)
 
     // //console.log(stockItem)
 
@@ -173,9 +176,16 @@ export default class MedicineStockList extends Component {
       }
     }
 
+    for (let i = 0; i < displayedStockCopy.length; i++) {
+      if (i === index) {
+        displayedStockCopy[i] = stockItem
+        break;
+      }
+    }
+
     //console.log(stockCopy)
 
-    this.setState({ allStock: stockCopy, stockDisplayed: stockCopy });
+    this.setState({ allStock: stockCopy, stockDisplayed: displayedStockCopy });
   }
 
 
@@ -193,7 +203,7 @@ export default class MedicineStockList extends Component {
     if (typedString.length == 0) {
       this.setState({ stockDisplayed: this.state.allStock, isStockDisabled: false });
     } else {
-      this.setState({ stockDisplayed: filteredArray, isStockDisabled: true });
+      this.setState({ stockDisplayed: filteredArray, isStockDisabled: false });
     }
   }
 

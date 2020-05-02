@@ -32,9 +32,9 @@ class PrescriptionService {
   }
 
   //Step 1
-  // update PrescriptionLineItems(lineItemArr){
-
-  // }
+  updatePrescriptionLineItems(lineItemArr, prescriptionID) {
+    return Axios.post(URL + `/pharmacy/updatePrescriptionLineItems/${prescriptionID}`, lineItemArr)
+  }
 }
 
 

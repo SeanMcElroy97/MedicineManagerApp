@@ -8,7 +8,7 @@ class PatientService {
   }
 
   fetchPatientById(patientID) {
-    //return Axios.get()
+    return Axios.get(URL + `/pharmacy/getPatientDetailsById/${patientID}`)
   }
 
   fetchPatientPrescriptions(patientID) {

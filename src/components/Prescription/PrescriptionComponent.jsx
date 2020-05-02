@@ -3,6 +3,7 @@ import React from 'react'
 
 import { Formik } from "formik";
 import { TextField, Button } from "@material-ui/core";
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
 import moment from 'moment';
 
@@ -15,17 +16,22 @@ export default class PrescriptionComponent extends React.Component {
             prescription: {},
             prescriptionLineItems: [],
             availableMedicine: [],
+            disableEditing: false
         }
         this.fetchLineItems = this.fetchLineItems.bind(this)
         this.fetchAllAvailableMedicine = this.fetchAllAvailableMedicine.bind(this)
 
-        this.handleLineItemChange = this.handleLineItemChange.bind(this)
+        //Line Item//
         this.addPrescriptionLineItem = this.addPrescriptionLineItem.bind(this)
+        this.handleLineItemQtyChange = this.handleLineItemQtyChange.bind(this)
+        this.handleLineItemInstructionsChange = this.handleLineItemInstructionsChange.bind(this)
+        this.handleMedicineChange = this.handleMedicineChange.bind(this)
+        //Line Item//
 
         this.handleStatusChange = this.handleStatusChange.bind(this)
         this.handleDoctorChange = this.handleDoctorChange.bind(this)
 
-        this.isEditingAllowed = true
+
 
         this.updatePrescriptionBtnHit = this.updatePrescriptionBtnHit.bind(this)
     }
@@ -54,20 +60,18 @@ export default class PrescriptionComponent extends React.Component {
     }
 
     fetchAllAvailableMedicine() {
-        // PrescriptionService.fetchAllAvailableMedicine()
-        //     .then(response => {
-        //         console.log(response)
-        //         this.setState({ availableMedicine: response.data })
-        //     })
+        PrescriptionService.fetchAllAvailableMedicine()
+            .then(response => {
+                console.log('medicines available below')
+                console.log(response)
+                this.setState({ availableMedicine: response.data })
+            })
     }
 
-    handleLineItemChange(event) {
-        console.log(event.target.value)
-        // this.setState({ value: event.target.value });
-    }
+
 
     render() {
-        let isDisabledEditing = false;
+
 
 
 
@@ -115,43 +119,52 @@ export default class PrescriptionComponent extends React.Component {
 
                     <fieldset className="form-group mt-5">
                         <label>Doctor/prescriber</label>
-                        <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Doctor" value={this.state.prescription.doctor || ''} onChange={this.handleDoctorChange} disabled={isDisabledEditing} />
+                        <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Doctor" value={this.state.prescription.doctor || ''} onChange={this.handleDoctorChange} disabled={this.state.disableEditing} />
                     </fieldset>
 
 
                     {this.state.prescriptionLineItems.map((lineItem, index) => (
 
-                        <div key={lineItem}>
-                            <div className="row mt-5">
-                                <fieldset className="col-8">
-                                    <label>Medication {index + 1}</label>
+                        <div key={lineItem.prescriptionLineItemID}>
 
-                                    <select className="form-control" onChange={this.handleLineItemChange}>
-                                        {/* {this.state.availableMedicine.map((option, index) =>
-                                            <option key={index} value={this.state.availableMedicine[index]}>{option.barcode}</option>
-                                        )} */}
+                            <label className="mt-5" style={{ fontWeight: 'bold' }}>LineItem {index + 1}</label>
+                            <div className="row">
+                                <fieldset className="col-8">
+                                    <label>Medicine</label>
+                                    <select value={lineItem.lineItemMedicineID} onChange={(e) => this.handleMedicineChange(index, e)} className="form-control">
+                                        {this.state.availableMedicine.map((medItem) => (
+                                            <option key={medItem.medicineItemID} value={medItem.medicineItemID}> {medItem.tradeName} {medItem.medicineStatus.toLowerCase() === "end of life" && '  ' + '   (' + medItem.medicineStatus + ')'} </option>
+                                        ))}
 
                                     </select>
-                                    {/* <input style={{ color: "purple", fontWeight: "normal" }} className="form-control" type="text" placeholder="Patient First Name here" value={lineItem.lineItemMedicine.tradeName || ''} onChange={this.handleChange} disabled={isDisabledEditing} /> */}
                                 </fieldset>
 
                                 <fieldset className="col-4">
                                     <label>Quantity</label>
-                                    <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Patient Last Name here" value={lineItem.prescriptionLineItemQty || 0} onChange={this.handleChange} disabled={isDisabledEditing} />
+                                    <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Patient Last Name here" value={lineItem.prescriptionLineItemQty} onChange={(e) => this.handleLineItemQtyChange(index, e)} disabled={this.state.disableEditing} />
                                 </fieldset>
                             </div>
 
                             <fieldset className="form-group mt-3">
                                 <label>Line Item Instructions</label>
-                                <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Patient Message To Pharmacy" defaultValue={lineItem.prescriptionLineItemInstructions || ''} onChange={this.handleChange} disabled={isDisabledEditing} />
+                                <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Patient Message To Pharmacy" value={lineItem.prescriptionLineItemInstructions || ''} onChange={(e) => this.handleLineItemInstructionsChange(index, e)} disabled={this.state.disableEditing} />
                             </fieldset>
+
+                            <fieldset className="form-group">
+                                <DeleteForeverIcon color="secondary" style={{ fontSize: 40 }} onClick={() => this.removeLineItem(index)} />
+                            </fieldset>
+
                         </div>
                     ))}
 
-                    <button className="btn btn-primary" onClick={() => this.state.prescriptionLineItems.push('')}>Add a line Item</button>
+                    <button className="btn btn-primary mt-5" onClick={this.addPrescriptionLineItem}>Add a line Item</button>
 
+                    {/*  */}
+                    {/*  */}
+                    {/*  */}
+                    {/*  */}
                     {/* Status   */}
-                    <fieldset className="form-group mt-3">
+                    <fieldset className="form-group mt-5">
                         <label>Prescription Status</label>
                         <select value={this.state.prescription.prescriptionStatus} className="form-control" onChange={this.handleStatusChange}>
                             <option style={{ color: "GoldenRod" }} value="submitted">Submitted</option>
@@ -162,10 +175,10 @@ export default class PrescriptionComponent extends React.Component {
                         </select>
                     </fieldset>
 
-                    <button className="btn btn-success" onClick={this.updatePrescriptionBtnHit}>Update Prescription</button>
+                    {this.state.disableEditing == false && <button className="btn btn-success mt-5" onClick={this.updatePrescriptionBtnHit} disabled={this.state.isEditingAllowed}>Update Prescription</button>}
 
 
-                    {/* <pre>{JSON.stringify(this.state, null, 2)}</pre> */}
+
                 </div>
 
                 <div className="col-4">
@@ -183,9 +196,9 @@ export default class PrescriptionComponent extends React.Component {
 
         //Object.assign({}, prescription)
         this.setState(prevState => {
-            let prescription = Object.assign({}, prevState.prescription);  // creating copy of state variable jasper
-            prescription.doctor = doctor;                     // update the name property, assign a new value                 
-            return { prescription };                                 // return new object jasper object
+            let prescription = Object.assign({}, prevState.prescription);
+            prescription.doctor = doctor;
+            return { prescription };
         })
     }
 
@@ -195,29 +208,141 @@ export default class PrescriptionComponent extends React.Component {
 
         //Object.assign({}, prescription)
         this.setState(prevState => {
-            let prescription = Object.assign({}, prevState.prescription);  // creating copy of state variable jasper
-            prescription.prescriptionStatus = status;                     // update the name property, assign a new value                 
-            return { prescription };                                 // return new object jasper object
+            let prescription = Object.assign({}, prevState.prescription);
+            prescription.prescriptionStatus = status;
+            return { prescription };
         })
     }
 
     addPrescriptionLineItem() {
-        let updatedPrescriptionLineItemArray;
+        let updatedPrescriptionLineItemArray = Object.assign([], this.state.prescriptionLineItems)
+
+        //push with empty attributes
+        updatedPrescriptionLineItemArray.push({ 'prescriptionLineItemInstructions': '', 'prescriptionLineItemQty': 0, 'prescriptionLineItemID': Math.random() * 1000 })
+
+        this.setState({ prescriptionLineItems: updatedPrescriptionLineItemArray })
     }
 
     updatePrescriptionBtnHit() {
+
+
+        let arrayOfLineItems = Object.assign([], this.state.prescriptionLineItems)
+        let arrayToBeSent = Object.assign([])
+
+        for (let i = 0; i < arrayOfLineItems.length; i++) {
+            if (arrayOfLineItems[i].prescriptionLineItemQty < 1) {
+                alert(' A line item cannot have zero quantity')
+                return;
+            }
+
+            const LineItemToSend = Object.assign({ 'prescriptionLineItemInstructions': arrayOfLineItems[i].prescriptionLineItemInstructions, 'prescriptionLineItemQty': arrayOfLineItems[i].prescriptionLineItemQty, 'lineItemMedicineID': arrayOfLineItems[i].lineItemMedicineID })
+            arrayToBeSent.push(LineItemToSend)
+        }
+
+        console.log(arrayToBeSent)
+
+        PrescriptionService.updatePrescriptionLineItems(arrayToBeSent, this.state.prescriptionID)
+
+
         //alert('update prescription method')
-        let prescriptionObjToPost = {}
-        prescriptionObjToPost.prescriptionID = this.state.prescription.prescriptionID
-        prescriptionObjToPost.doctor = this.state.prescription.doctor || ''
-        prescriptionObjToPost.prescriptionStatus = this.state.prescription.prescriptionStatus
+        // let prescriptionObjToPost = {}
+        // prescriptionObjToPost.prescriptionID = this.state.prescription.prescriptionID
+        // prescriptionObjToPost.doctor = this.state.prescription.doctor || ''
+        // prescriptionObjToPost.prescriptionStatus = this.state.prescription.prescriptionStatus
 
-        prescriptionObjToPost.prescriptionFulfilmentDate = this.state.prescriptionFulfilmentDate || 0
+        // prescriptionObjToPost.prescriptionFulfilmentDate = this.state.prescriptionFulfilmentDate || 0
 
 
-        PrescriptionService.updatePrescriptionWithoutLineItems(prescriptionObjToPost)
-            .then(response => console.log(response))
+        // PrescriptionService.updatePrescriptionWithoutLineItems(prescriptionObjToPost)
+        //     .then(response => console.log(response))
 
-        console.log(prescriptionObjToPost)
+        // console.log(prescriptionObjToPost)
+    }
+
+    handleLineItemQtyChange(index, e) {
+        //console.log('index ' + index + ', line item change ' + e.target.value)
+
+        let updatedLineItems = Object.assign([], this.state.prescriptionLineItems)
+
+        const targetLineItem = Object.assign([], this.state.prescriptionLineItems[index])
+
+        targetLineItem.prescriptionLineItemQty = parseInt(e.target.value) || 0
+
+        console.log(targetLineItem)
+
+        for (let i = 0; i < updatedLineItems.length; i++) {
+            if (i === index) {
+                updatedLineItems[i] = targetLineItem
+                break;
+            }
+        }
+
+        this.setState({ prescriptionLineItems: updatedLineItems })
+
+    }
+
+    handleLineItemInstructionsChange(index, e) {
+        //console.log('index ' + index + ', line item change ' + e.target.value)
+
+        let updatedLineItems = Object.assign([], this.state.prescriptionLineItems)
+
+        const targetLineItem = Object.assign([], this.state.prescriptionLineItems[index])
+
+        targetLineItem.prescriptionLineItemInstructions = e.target.value || ''
+
+        // console.log(targetLineItem)
+
+        for (let i = 0; i < updatedLineItems.length; i++) {
+            if (i === index) {
+                updatedLineItems[i] = targetLineItem
+                break;
+            }
+        }
+
+        this.setState({ prescriptionLineItems: updatedLineItems })
+
+    }
+
+    handleMedicineChange(index, e) {
+
+        console.log('index line item ' + index + '  value ' + e.target.value)
+
+        let updatedLineItems = Object.assign([], this.state.prescriptionLineItems)
+
+        const targetLineItem = Object.assign([], this.state.prescriptionLineItems[index])
+
+        targetLineItem.lineItemMedicineID = parseInt(e.target.value) || 1
+
+        // console.log('target Medicine below')
+        // console.log(targetLineItem)
+
+        for (let i = 0; i < updatedLineItems.length; i++) {
+            if (i === index) {
+                updatedLineItems[i] = targetLineItem
+                break;
+            }
+        }
+
+        this.setState({ prescriptionLineItems: updatedLineItems })
+
+    }
+
+    removeLineItem(index) {
+        let updatedLineItems = Object.assign([], this.state.prescriptionLineItems)
+
+        // const targetLineItem = Object.assign([], this.state.prescriptionLineItems[index])
+
+
+        // for (let i = 0; i < updatedLineItems.length; i++) {
+        //     if (i === index) {
+        //         updatedLineItems[i] = targetLineItem
+        //         break;
+        //     }
+        // }
+
+        updatedLineItems.splice(index, 1)
+
+        this.setState({ prescriptionLineItems: updatedLineItems })
+
     }
 }  
