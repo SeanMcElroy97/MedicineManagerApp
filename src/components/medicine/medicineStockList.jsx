@@ -118,7 +118,8 @@ export default class MedicineStockList extends Component {
             <thead>
               <tr className="bg-success text-white">
                 <th>Trade Name</th>
-                <th>IPU Category</th>
+                <th>Pack Size</th>
+                <th>Strength</th>
                 <th>Barcode</th>
                 <th>Status</th>
                 <th>Quantity</th>
@@ -130,7 +131,8 @@ export default class MedicineStockList extends Component {
                 {this.state.stockDisplayed.map((stockItem, index) => (
                   <tr key={stockItem.itemStockLevelID} style={stockItem.itemStockMedicine.medicineStatus.toLowerCase() == "end of life" ? { background: "lightgrey" } : {}}>
                     <td onClick={() => this.props.history.push(`/medicine/${stockItem.itemStockMedicine.barcode}`)}>{stockItem.itemStockMedicine.tradeName}</td>
-                    <td>{stockItem.itemStockMedicine.ipuCategory}</td>
+                    <td>{stockItem.itemStockMedicine.packSize}</td>
+                    <td>{stockItem.itemStockMedicine.strength}</td>
                     <td>{stockItem.itemStockMedicine.barcode}</td>
                     <td>{stockItem.itemStockMedicine.medicineStatus}</td>
                     <td><input maxLength="5" size="5" value={stockItem.quantity} disabled={this.state.isStockDisabled} onChange={(e) => this.handleQtyChange(stockItem.itemStockLevelID, e)} /></td>

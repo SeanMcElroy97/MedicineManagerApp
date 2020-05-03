@@ -31,6 +31,9 @@ class PrescriptionService {
     return Axios.post(URL + `/pharmacy/updatePrescription`, updatedPrescription)
   }
 
+  fetchMedicineStockAvailability(MedicineId, qtyToRemove) {
+    return Axios.get(URL + `/pharmacy/CheckLineItemStock/${MedicineId}/${qtyToRemove}`)
+  }
   //Step 1
   updatePrescriptionLineItems(lineItemArr, prescriptionID) {
     return Axios.post(URL + `/pharmacy/updatePrescriptionLineItems/${prescriptionID}`, lineItemArr)

@@ -17,13 +17,7 @@ class AuthenticationService {
   }
 
   newPharmacyPost(newPharmacy) {
-    //Params
-    //1.EndPoint to hit. 
-    //2.Data to send. 
-    //3.Allow API to set cookie
-
-    Axios.post(URL + "/newPharm", newPharmacy)
-      .then(this.registerSuccessfulLogin(newPharmacy.pharmacyEmail))
+    return Axios.post(URL + "/createNewPharmacy", newPharmacy)
   }
 
   //Login

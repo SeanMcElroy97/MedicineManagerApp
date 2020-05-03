@@ -18,7 +18,7 @@ export default class prescriptionListComponent extends Component {
       prescriptionsFulfilled: []
     };
 
-    // this.filterPrescriptionList = this.filterPrescriptionList.bind(this);
+    this.filterPrescriptionList = this.filterPrescriptionList.bind(this);
     this.getCardHeaderColor = this.getCardHeaderColor.bind(this);
     this.getCardBodyColor = this.getCardBodyColor.bind(this);
     this.getCardBorderColor = this.getCardBorderColor.bind(this)
@@ -32,6 +32,7 @@ export default class prescriptionListComponent extends Component {
       this.setState({ prescriptions: response.data, prescriptionsOnDisplay: response.data })
       console.log(response.data)
     }).then(() => {
+      this.filterPrescriptionList()
       this.getPrescriptionsFulfilled()
       this.getPrescriptionsSubmitted()
     })
@@ -188,6 +189,15 @@ export default class prescriptionListComponent extends Component {
 
 
     this.setState({ prescriptionsFulfilled: fulfilled })
+  }
+
+
+  filterPrescriptionList() {
+    let originalList = Object.assign([], this.state.prescriptions)
+
+    originalList.sort((a, b) => (a.prescriptionCreationDate < b.prescriptionCreationDate) ? 1 : -1)
+
+    this.setState({ prescriptionsOnDisplay: originalList, prescriptions: originalList })
   }
 
   dateFormated = (longMillis) => {

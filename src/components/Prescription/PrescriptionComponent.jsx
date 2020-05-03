@@ -44,7 +44,7 @@ export default class PrescriptionComponent extends React.Component {
 
                 this.fetchLineItems()
             }).then(
-                PrescriptionService.fetchisPrescriptionEditable(this.props.match.params.prescriptionID).then(response => console.log('is editable ' + response.data))
+                PrescriptionService.fetchisPrescriptionEditable(this.props.match.params.prescriptionID).then(response => this.setState({ disableEditing: !response.data }))
             )
     }
 
@@ -131,7 +131,7 @@ export default class PrescriptionComponent extends React.Component {
                             <div className="row">
                                 <fieldset className="col-8">
                                     <label>Medicine</label>
-                                    <select value={lineItem.lineItemMedicineID} onChange={(e) => this.handleMedicineChange(index, e)} className="form-control">
+                                    <select value={lineItem.lineItemMedicineID} onChange={(e) => this.handleMedicineChange(index, e)} className="form-control" disabled={this.state.disableEditing}>
                                         {this.state.availableMedicine.map((medItem) => (
                                             <option key={medItem.medicineItemID} value={medItem.medicineItemID}> {medItem.tradeName} {medItem.medicineStatus.toLowerCase() === "end of life" && '  ' + '   (' + medItem.medicineStatus + ')'} </option>
                                         ))}
@@ -151,13 +151,13 @@ export default class PrescriptionComponent extends React.Component {
                             </fieldset>
 
                             <fieldset className="form-group">
-                                <DeleteForeverIcon color="secondary" style={{ fontSize: 40 }} onClick={() => this.removeLineItem(index)} />
+                                <DeleteForeverIcon color="secondary" style={{ fontSize: 40 }} disabled={this.state.disableEditing} onClick={() => this.removeLineItem(index)} />
                             </fieldset>
 
                         </div>
                     ))}
 
-                    <button className="btn btn-primary mt-5" onClick={this.addPrescriptionLineItem}>Add a line Item</button>
+                    <button className="btn btn-primary mt-5" disabled={this.state.disableEditing} onClick={this.addPrescriptionLineItem}>Add a line Item</button>
 
                     {/*  */}
                     {/*  */}
@@ -166,7 +166,7 @@ export default class PrescriptionComponent extends React.Component {
                     {/* Status   */}
                     <fieldset className="form-group mt-5">
                         <label>Prescription Status</label>
-                        <select value={this.state.prescription.prescriptionStatus} className="form-control" onChange={this.handleStatusChange}>
+                        <select value={this.state.prescription.prescriptionStatus} className="form-control" onChange={this.handleStatusChange} disabled={this.state.disableEditing}>
                             <option style={{ color: "GoldenRod" }} value="submitted">Submitted</option>
                             <option style={{ color: "blue" }} value="being prepared">Being Prepared</option>
                             <option style={{ color: "green" }} value="ready">Ready for pickup</option>
@@ -241,22 +241,27 @@ export default class PrescriptionComponent extends React.Component {
 
         console.log(arrayToBeSent)
 
-        PrescriptionService.updatePrescriptionLineItems(arrayToBeSent, this.state.prescriptionID)
+        PrescriptionService.updatePrescriptionLineItems(arrayToBeSent, this.state.prescriptionID).then(() => {
 
 
-        //alert('update prescription method')
-        // let prescriptionObjToPost = {}
-        // prescriptionObjToPost.prescriptionID = this.state.prescription.prescriptionID
-        // prescriptionObjToPost.doctor = this.state.prescription.doctor || ''
-        // prescriptionObjToPost.prescriptionStatus = this.state.prescription.prescriptionStatus
+            //alert('update prescription method')
+            let prescriptionObjToPost = {}
+            prescriptionObjToPost.prescriptionID = this.state.prescription.prescriptionID
+            prescriptionObjToPost.doctor = this.state.prescription.doctor || ''
+            prescriptionObjToPost.prescriptionStatus = this.state.prescription.prescriptionStatus
 
-        // prescriptionObjToPost.prescriptionFulfilmentDate = this.state.prescriptionFulfilmentDate || 0
+            if (prescriptionObjToPost.prescriptionStatus.toLowerCase == "fulfilled") {
+                prescriptionObjToPost.prescriptionFulfilmentDate = new Date().getTime()
+            } else {
+                prescriptionObjToPost.prescriptionFulfilmentDate = 0
+            }
+            // prescriptionObjToPost.prescriptionFulfilmentDate = this.state.prescriptionFulfilmentDate || 0
 
 
-        // PrescriptionService.updatePrescriptionWithoutLineItems(prescriptionObjToPost)
-        //     .then(response => console.log(response))
+            PrescriptionService.updatePrescriptionWithoutLineItems(prescriptionObjToPost).then(() => { this.componentDidMount() })
 
-        // console.log(prescriptionObjToPost)
+
+        })
     }
 
     handleLineItemQtyChange(index, e) {
@@ -266,9 +271,26 @@ export default class PrescriptionComponent extends React.Component {
 
         const targetLineItem = Object.assign([], this.state.prescriptionLineItems[index])
 
+        // targetLineItem.lineItemMedicineID
+        // targetLineItem.prescriptionLineItemQty
+
         targetLineItem.prescriptionLineItemQty = parseInt(e.target.value) || 0
 
-        console.log(targetLineItem)
+        PrescriptionService.fetchMedicineStockAvailability(this.state.prescriptionLineItems[index].lineItemMedicineID, e.target.value)
+            .then(response => {
+                if (response.data == false) {
+                    alert('not enough stock')
+                    targetLineItem.prescriptionLineItemQty = 0
+                }
+            })
+
+
+        // targetLineItem.prescriptionLineItemQty = test || 0
+
+
+        // console.log(targetLineItem)
+
+        // console.log(this.state.prescriptionLineItems[index].lineItemMedicineID)
 
         for (let i = 0; i < updatedLineItems.length; i++) {
             if (i === index) {

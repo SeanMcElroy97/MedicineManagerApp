@@ -24,6 +24,8 @@ export default class PatientComponent extends Component {
     this.getCardHeaderColor = this.getCardHeaderColor.bind(this)
     this.getCardBodyColor = this.getCardBodyColor.bind(this)
     this.getCardBorderColor = this.getCardBorderColor.bind(this)
+    //
+    this.filterPrescriptionList = this.filterPrescriptionList.bind(this)
   }
 
   componentDidMount() {
@@ -40,7 +42,10 @@ export default class PatientComponent extends Component {
       .then(response => {
         this.setState({ patientPrescriptions: response.data, displayedPatientPrescriptions: response.data })
         console.log(response)
-      }).then(() => this.getPrescriptionsCancelled()).then(() => this.getPrescriptionsFulfilled())
+      }).then(() => this.getPrescriptionsCancelled()).then(() => {
+        this.getPrescriptionsFulfilled()
+        this.filterPrescriptionList()
+      })
 
 
     //Call a Patient Service to get details from Service
@@ -191,6 +196,15 @@ export default class PatientComponent extends Component {
         return 'card border border-primary'
       // code block
     }
+  }
+
+
+  filterPrescriptionList() {
+    let originalList = Object.assign([], this.state.patientPrescriptions)
+
+    originalList.sort((a, b) => (a.prescriptionCreationDate < b.prescriptionCreationDate) ? 1 : -1)
+
+    this.setState({ displayedPatientPrescriptions: originalList, patientPrescriptions: originalList })
   }
 
 }

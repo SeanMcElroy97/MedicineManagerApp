@@ -120,6 +120,8 @@ export default class AdminMedicineMainComponent extends Component {
   };
 
   updateMedItemList = medList => {
+
+    console.log(medList)
     MedicineService.adminPOSTMedList(medList)
       .then(this.refreshMedicineList)
       .catch(() => alert("Couldnt update product file"));

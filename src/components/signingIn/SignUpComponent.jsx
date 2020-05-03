@@ -94,7 +94,7 @@ export default class SignUpComponent extends Component {
     submitNewUserToAPI(formdata) {
 
         AuthenticationService.newPharmacyPost(formdata)
-        this.props.history.push(`/home/${formdata.pharmacyEmail}`)
+            .then(response => response.data == false ? alert('pharmacy with existing details exists') : console.log('pass to login'))
     }
 
 }
