@@ -255,7 +255,7 @@ export default class AdminMedicineMainComponent extends Component {
                         className={"tr:hover"}
                         key={medicine.barcode}
                         onClick={() => this.props.history.push(`/medicine/${medicine.barcode}`)}
-                        style={medicine.medicineStatus.toLowerCase().replace(" ", "") == "endoflife" ? { background: "lightgrey" } : {}}
+                        style={medicine.medicineStatus.toLowerCase() == "end of life" ? { background: "lightgrey" } : {}}
                       // onMouseEnter={() => { style = {{ background: "blue" }} }}
                       >
                         <td>{medicine.tradeName}</td>

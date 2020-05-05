@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import HeaderComponent from "../HeaderComponent.jsx";
 
 import LandingPageComponent from "../signingIn/LandingPageComponent.jsx";
+import AboutComponent from "../AboutComponent.jsx";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import HomeComponent from "../HomeComponent.jsx";
@@ -13,6 +14,7 @@ import PatientComponent from "../patients/PatientComponent.jsx";
 
 // import AuthenticationService
 import AuthenticatedRoute from "../../Authentication/AuthenticatedRoute.jsx";
+import AdminAuthenticatedRoute from "../../Authentication/AdminAuthenticatedRoute.jsx";
 
 
 //Admin Components
@@ -45,7 +47,7 @@ export default class MedicineManagerApp extends Component {
           <AuthenticatedRoute path="/signout" component={LandingPageComponent} />
 
           {/* Admin Route */}
-          <AuthenticatedRoute
+          <AdminAuthenticatedRoute
             path="/adminmedicinefile"
             exact
             component={AdminMedicineMainComponent}
@@ -57,7 +59,7 @@ export default class MedicineManagerApp extends Component {
             component={MedicineStockList}
           />
 
-          <AuthenticatedRoute
+          <Route
             path="/medicine/:barcode"
             exact
             component={MedicineItem}
@@ -91,8 +93,12 @@ export default class MedicineManagerApp extends Component {
             component={Covid19MainComponent}
           />
 
+          <Route path="/about" exact component={AboutComponent} />
+
           <AuthenticatedRoute component={ErrorComponent} />
           <Route component={LandingPageComponent} />
+
+
         </Switch>
       </Router>
     );

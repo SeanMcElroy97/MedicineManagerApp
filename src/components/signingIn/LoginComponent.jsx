@@ -10,7 +10,7 @@ export default class LoginComponent extends Component {
 
     console.log(props)
     this.state = {
-      pharmEmail: "pharmacyX",
+      pharmEmail: "McelroysPharmacy@gmail.com",
       pharmPassword: "",
     };
 
@@ -41,6 +41,7 @@ export default class LoginComponent extends Component {
                 </div>
                 <div className="form-group col-md-6">
                   <Field
+                    type="password"
                     className="form-control"
                     name="pharmacyPasswordInput"
                     placeholder="Password"
@@ -60,37 +61,21 @@ export default class LoginComponent extends Component {
   loginValidation(values) {
     console.log(values);
 
-    if (values.pharmacyEmailInput === "pharmacyX" && values.pharmacyPasswordInput === "password") {
 
-      this.setState({ pharmEmail: values.pharmacyEmailInput, pharmPassword: values.pharmacyPasswordInput });
+    AuthenticationService.pharmacyLogin(values.pharmacyEmailInput, values.pharmacyPasswordInput)
+      .then(response => {
+        console.log(response)
+        if (response.data.role == '[ROLE_PHARMACY]') {
+          AuthenticationService.registerSuccessfulLogin(response.data.jwt, values.pharmacyEmailInput)
+          this.props.history.push('/home')
+        }
+        if (response.data.role == '[ROLE_ADMIN]') {
+          AuthenticationService.registerSuccessfulAdminLogin(response.data.jwt, values.pharmacyEmailInput)
+          this.props.history.push('/adminmedicinefile')
+        }
 
-      console.log('The state is dis ' + this.state.pharmPassword)
-
-      AuthenticationService.registerSuccessfulLogin(
-        this.state.pharmEmail,
-        this.state.pharmPassword
-      );
-
-      //console.log(this.props.history);
-      // this.props.history.push(`/home/${this.state.pharmEmail}`);
-      this.props.history.push('/home')
-
-    }
-
-
-    if (values.pharmacyEmailInput === "Admin" && values.pharmacyPasswordInput === "password") {
-
-      this.setState({ pharmEmail: values.pharmacyEmailInput, pharmPassword: values.pharmacyPasswordInput });
-
-      AuthenticationService.registerSuccessfulLogin(
-        this.state.pharmEmail,
-        this.state.pharmPassword
-      );
-
-      this.props.history.push('/home')
-
-    }
-
+      })
+      .catch(() => alert('incorrect login details'))
 
   }
   //Call API to try Sign in an existing user

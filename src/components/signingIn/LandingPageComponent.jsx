@@ -1,12 +1,15 @@
 import React, { Component } from "../../../node_modules/react";
 import LoginComponent from "./LoginComponent";
 import SignUpComponent from "./SignUpComponent";
+import AuthenticationService from "../../Authentication/AuthenticationService"
 
 
 export default class LandingPageComponent extends Component {
     constructor(props) {
         super(props);
     }
+
+
     render() {
         return (
             <div className="container">
@@ -19,5 +22,9 @@ export default class LandingPageComponent extends Component {
                 </div>
             </div>
         )
+    }
+
+    componentDidMount() {
+        AuthenticationService.logoutUser()
     }
 }

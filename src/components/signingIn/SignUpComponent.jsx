@@ -6,16 +6,17 @@ import AuthenticationService from "../../Authentication/AuthenticationService"
 export default class SignUpComponent extends Component {
     constructor(props) {
         super(props);
-        // this.state = {
-        //     pharmacyEmail: '',
-        //     pharmacyPassword: '',
-        //     psiRegistrationNumber: '',
-        //     pharmacyName: '',
-        //     pharmacyContactNum: '',
-        //     pharmacyAddress: ''
-        // }
+        this.state = {
+            pharmacyEmail: '',
+            pharmacyPassword: '',
+            psiRegistrationNumber: '',
+            pharmacyName: '',
+            pharmacyContactNum: '',
+            pharmacyAddress: ''
+        }
 
         this.submitNewUserToAPI = this.submitNewUserToAPI.bind(this)
+        this.loginPharmacy = this.loginPharmacy.bind(this)
     }
 
     render() {
@@ -24,14 +25,15 @@ export default class SignUpComponent extends Component {
 
             <Formik
                 initialValues={{
-                    pharmacyEmail: '',
+                    pharmacyEmail: this.state.pharmacyEmail,
                     pharmacyPassword: '',
                     psiRegistrationNumber: '',
                     pharmacyName: '',
-                    pharmacyContactNum: '',
+                    contactNumber: '',
                     pharmacyAddress: ''
                 }}
-                onSubmit={(formData) => this.submitNewUserToAPI(formData)}>
+                onSubmit={(formData) => this.submitNewUserToAPI(formData)}
+            >
 
                 {() => (
                     <Form>
@@ -69,8 +71,9 @@ export default class SignUpComponent extends Component {
                         <div className="form-group">
                             <Field
                                 className="form-control"
-                                name="pharmacyContactNum"
+                                name="contactNumber"
                                 placeholder="Contact Number"
+
                             />
                         </div>
                         <div className="form-group">
@@ -92,9 +95,30 @@ export default class SignUpComponent extends Component {
 
     //Call this when user details pass validation
     submitNewUserToAPI(formdata) {
+        // console.log(formdata)
+
+        // formdata.pharmacyEmail
+        // formdata.pharmacyPassword
 
         AuthenticationService.newPharmacyPost(formdata)
-            .then(response => response.data == false ? alert('pharmacy with existing details exists') : console.log('pass to login'))
+            .then(response => {
+
+                if (response.data == false) {
+                    alert('pharmacy with existing details exists')
+                } else {
+                    this.loginPharmacy(formdata.pharmacyEmail, formdata.pharmacyPassword)
+                }
+            })
+
+    }
+
+    loginPharmacy(email, password) {
+        AuthenticationService.pharmacyLogin(email, password)
+            .then(response => {
+                // console.log(response)
+                AuthenticationService.registerSuccessfulLogin(response.data.jwt, email)
+                this.props.history.push('/home')
+            })
     }
 
 }
