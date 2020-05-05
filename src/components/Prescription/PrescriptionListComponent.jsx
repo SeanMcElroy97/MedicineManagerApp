@@ -154,7 +154,7 @@ export default class prescriptionListComponent extends Component {
 
                     <h4 className="card-title">{prescription.patientFirstName + ' ' + prescription.patientLastName}</h4>
                     <p className="card-text">{prescription.prescriptionLineItems.length} Line Items</p>
-                    <p className="card-text">{prescription.prescriptionStatus.toLowerCase() == "fulfilled" ? 'Fulfilled ' + format(new Date(prescription.prescriptionFulfilmentDate), 'hh:mm, dd/MM/yyyy') : 'Created ' + format(new Date(prescription.prescriptionCreationDate), 'hh:mm, dd/MM/yyyy')}</p>
+                    <p className="card-text">{prescription.prescriptionStatus.toLowerCase() == "fulfilled" ? 'Fulfilled ' + format(new Date(prescription.prescriptionFulfilmentDate), 'HH:mm, dd/MM/yyyy') : 'Created ' + format(new Date(prescription.prescriptionCreationDate), 'HH:mm, dd/MM/yyyy')}</p>
                   </div>
                 </div>
               </div>

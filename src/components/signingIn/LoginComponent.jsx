@@ -10,7 +10,7 @@ export default class LoginComponent extends Component {
 
     console.log(props)
     this.state = {
-      pharmEmail: "McelroysPharmacy@gmail.com",
+      pharmEmail: "",
       pharmPassword: "",
     };
 

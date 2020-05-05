@@ -114,7 +114,7 @@ export default class PrescriptionComponent extends React.Component {
 
                     <fieldset className="form-group mt-5">
                         <label>Patient Message to pharmacy</label>
-                        <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Patient Message To Pharmacy" value={this.state.prescription.patientMessage || ''} disabled={true} />
+                        <input style={{ color: "purple" }} className="form-control" type="text" placeholder="No additional Message To Pharmacy" value={this.state.prescription.patientMessage || ''} disabled={true} />
                     </fieldset>
 
                     <fieldset className="form-group mt-5">
@@ -147,7 +147,7 @@ export default class PrescriptionComponent extends React.Component {
 
                             <fieldset className="form-group mt-3">
                                 <label>Line Item Instructions</label>
-                                <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Patient Message To Pharmacy" value={lineItem.prescriptionLineItemInstructions || ''} onChange={(e) => this.handleLineItemInstructionsChange(index, e)} disabled={this.state.disableEditing} />
+                                <input style={{ color: "purple" }} className="form-control" type="text" placeholder="Medicine/Line item instuctions" value={lineItem.prescriptionLineItemInstructions || ''} onChange={(e) => this.handleLineItemInstructionsChange(index, e)} disabled={this.state.disableEditing} />
                             </fieldset>
 
                             <fieldset className="form-group">
@@ -250,7 +250,7 @@ export default class PrescriptionComponent extends React.Component {
             prescriptionObjToPost.doctor = this.state.prescription.doctor || ''
             prescriptionObjToPost.prescriptionStatus = this.state.prescription.prescriptionStatus
 
-            if (prescriptionObjToPost.prescriptionStatus.toLowerCase == "fulfilled") {
+            if (prescriptionObjToPost.prescriptionStatus.toLowerCase() == "fulfilled") {
                 prescriptionObjToPost.prescriptionFulfilmentDate = new Date().getTime()
             } else {
                 prescriptionObjToPost.prescriptionFulfilmentDate = 0
